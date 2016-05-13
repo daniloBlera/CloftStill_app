@@ -1,11 +1,11 @@
 package com.cloftstill.cloftstill.controller;
 
-import android.net.ConnectivityManager;
+import android.content.Context;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
-import com.cloftstill.cloftstill.Model.ServerInfo;
-
-import org.apache.http.protocol.HTTP;
+import com.cloftstill.cloftstill.model.ServerInfo;
+import com.cloftstill.cloftstill.model.User;
 
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -17,6 +17,13 @@ import java.net.URL;
 public class DoorController {
     public DoorController() {
         super();
+    }
+
+    public void createUser(String pin, String phoneNumber){
+        User user = new User();
+        user.setPinPassword(pin);
+        user.setSimNumber(phoneNumber);
+
     }
 
     /**

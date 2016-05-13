@@ -3,126 +3,24 @@ package com.cloftstill.cloftstill.view;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.telephony.TelephonyManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-
 import com.cloftstill.cloftstill.R;
+import com.cloftstill.cloftstill.model.ServerComunicate;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
-
-import java.io.IOException;
-import java.io.InputStream;
-
 public class OpenDoorActivity extends AppCompatActivity {
+
     Context context = this;
-
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
-
-    /*@Override
-    public void onStart() {
-        super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "OpenDoor Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://com.cloftstill.cloftstill.view/http/host/path")
-        );
-        AppIndex.AppIndexApi.start(client, viewAction);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "OpenDoor Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://com.cloftstill.cloftstill.view/http/host/path")
-        );
-        AppIndex.AppIndexApi.end(client, viewAction);
-        client.disconnect();
-    }*/
-
-
-    public class LongRunningGetIO extends AsyncTask<String, Void, String> {
-        public String texto;
-
-        public String getTexto() {
-            return texto;
-        }
-
-        public void setTexto(String texto) {
-            this.texto = texto;
-        }
-
-
-        protected String getASCIIContentFromEntity(HttpEntity entity) throws IllegalStateException, IOException {
-            InputStream in = entity.getContent();
-            StringBuffer out = new StringBuffer();
-            int n = 1;
-            while (n > 0) {
-                byte[] b = new byte[4096];
-                n = in.read(b);
-                if (n > 0) out.append(new String(b, 0, n));
-            }
-            return out.toString();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            HttpClient httpClient = new DefaultHttpClient();
-            HttpContext localContext = new BasicHttpContext();
-            String urlString = params[0];
-            HttpGet httpGet = new HttpGet(urlString);
-            //String texto = null;
-
-            try {
-                HttpResponse response = httpClient.execute(httpGet, localContext);
-                HttpEntity entity = response.getEntity();
-                texto = getASCIIContentFromEntity(entity);
-
-            } catch (Exception e) {
-                return e.getLocalizedMessage();
-            }
-
-            return texto;
-        }
-    }
-
+    String pin = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,20 +29,106 @@ public class OpenDoorActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        final String t;
+        final Button openDoorBtn = (Button) findViewById(R.id.openDoorButton);
+        final Button numpad1 = (Button) findViewById(R.id.btn1);
+        final Button numpad2 = (Button) findViewById(R.id.btn2);
+        final Button numpad3 = (Button) findViewById(R.id.btn3);
+        final Button numpad4 = (Button) findViewById(R.id.btn4);
+        final Button numpad5 = (Button) findViewById(R.id.btn5);
+        final Button numpad6 = (Button) findViewById(R.id.btn6);
+        final Button numpad7 = (Button) findViewById(R.id.btn7);
+        final Button numpad8 = (Button) findViewById(R.id.btn8);
+        final Button numpad9 = (Button) findViewById(R.id.btn9);
+        final Button numpad0 = (Button) findViewById(R.id.btn0);
+        final Button numpadOK = (Button) findViewById(R.id.btnOK);
+        final Button numpadErase = (Button) findViewById(R.id.btnErase);
+        final ServerComunicate serverComunicate = new ServerComunicate();
 
-        // isNetworkAvaliable();
+        numpad0.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pin += "0";
+            }
+        });
+        numpad1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pin += "1";
+            }
+        });
+        numpad2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pin += "2";
+            }
+        });
+        numpad3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pin += "3";
+            }
+        });
+        numpad4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pin += "4";
+            }
+        });
+        numpad5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pin += "5";
+            }
+        });
+        numpad6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pin += "6";
+            }
+        });
+        numpad7.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pin += "7";
+            }
+        });
+        numpad8.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pin += "8";
+            }
+        });
+        numpad9.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pin += "9";
+            }
+        });
+        numpadErase.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (pin.length() > 0) {
+                    pin = pin.substring(0, pin.length() - 1);
+                }
+            }
+        });
+        numpadOK.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    TelephonyManager telemamanger = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+                    String getSimSerialNumber = telemamanger.getSimSerialNumber();
+                    String getSimNumber = telemamanger.getLine1Number();
+                    Toast.makeText(context, "SIM number: " + getSimNumber, Toast.LENGTH_SHORT).show();
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+                Toast.makeText(context, "PIN password: " + pin, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context,serverComunicate.comunicate(), Toast.LENGTH_LONG).show();
 
-        final LongRunningGetIO L = new LongRunningGetIO();
-        L.execute("http://192.168.0.5:5000/open/");
-
-        try {
-            L.get(); // ESPERA EXECUTAR A ASYNC TASK
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        t = L.getTexto();
-
+                pin = ""; //reset password
+            }
+        });
 
         /**
          * Liberar permissões
@@ -153,8 +137,6 @@ public class OpenDoorActivity extends AppCompatActivity {
 //        StrictMode.setThreadPolicy(policy);
 
 
-
-        Button openDoorBtn = (Button) findViewById(R.id.openDoorButton);
         assert openDoorBtn != null;
         openDoorBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -162,26 +144,26 @@ public class OpenDoorActivity extends AppCompatActivity {
                 //t = L.getTexto();
                 //DoorController controller = new DoorController();
                 //controller.requestOpen();
-                Toast.makeText(context,t, Toast.LENGTH_LONG).show();
+                numpad0.setEnabled(true);
+                numpad1.setEnabled(true);
+                numpad2.setEnabled(true);
+                numpad3.setEnabled(true);
+                numpad4.setEnabled(true);
+                numpad5.setEnabled(true);
+                numpad6.setEnabled(true);
+                numpad7.setEnabled(true);
+                numpad8.setEnabled(true);
+                numpad9.setEnabled(true);
+                numpadOK.setEnabled(true);
+                numpadErase.setEnabled(true);
+
             }
         });
 
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_open_door, menu);
         return true;
     }

@@ -1,4 +1,4 @@
-package com.cloftstill.cloftstill.Model;
+package com.cloftstill.cloftstill.model;
 
 /**
  * Created by dcblera on 11/05/16.
