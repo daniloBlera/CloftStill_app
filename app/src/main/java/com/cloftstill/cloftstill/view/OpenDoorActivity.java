@@ -13,9 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 import com.cloftstill.cloftstill.R;
-import com.cloftstill.cloftstill.model.ServerComunicate;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
+import com.cloftstill.cloftstill.controller.ServerComunicate;
 
 public class OpenDoorActivity extends AppCompatActivity {
 
@@ -117,14 +115,13 @@ public class OpenDoorActivity extends AppCompatActivity {
             public void onClick(View v) {
                 try {
                     TelephonyManager telemamanger = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-                    String getSimSerialNumber = telemamanger.getSimSerialNumber();
                     String getSimNumber = telemamanger.getLine1Number();
                     Toast.makeText(context, "SIM number: " + getSimNumber, Toast.LENGTH_SHORT).show();
                 } catch (Exception e){
                     e.printStackTrace();
                 }
                 Toast.makeText(context, "PIN password: " + pin, Toast.LENGTH_SHORT).show();
-                //Toast.makeText(context,serverComunicate.comunicate(), Toast.LENGTH_LONG).show();
+                Toast.makeText(context,serverComunicate.comunicate(), Toast.LENGTH_LONG).show();
 
                 pin = ""; //reset password
             }

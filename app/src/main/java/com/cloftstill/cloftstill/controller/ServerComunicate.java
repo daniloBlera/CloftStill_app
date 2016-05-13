@@ -1,4 +1,4 @@
-package com.cloftstill.cloftstill.model;
+package com.cloftstill.cloftstill.controller;
 
 import android.os.AsyncTask;
 
@@ -20,7 +20,7 @@ public class ServerComunicate {
         // isNetworkAvaliable();
 
         final LongRunningGetIO L = new LongRunningGetIO();
-        L.execute("http://192.168.25.1:5000/open/");
+        L.execute("http://172.16.206.96:5000/open/");
 
         try {
             L.get(); // ESPERA EXECUTAR A ASYNC TASK
