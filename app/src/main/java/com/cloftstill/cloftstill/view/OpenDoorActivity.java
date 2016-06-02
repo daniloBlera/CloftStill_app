@@ -26,6 +26,7 @@ public class OpenDoorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_open_door);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        
 
         final Button openDoorBtn = (Button) findViewById(R.id.openDoorButton);
         final Button numpad1 = (Button) findViewById(R.id.btn1);
@@ -116,12 +117,14 @@ public class OpenDoorActivity extends AppCompatActivity {
                 try {
                     TelephonyManager telemamanger = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
                     String getSimNumber = telemamanger.getLine1Number();
+                    String getSerialNumber = telemamanger.getSimSerialNumber();
+                    Toast.makeText(context, "Serial number: " + getSerialNumber, Toast.LENGTH_SHORT).show();
                     Toast.makeText(context, "SIM number: " + getSimNumber, Toast.LENGTH_SHORT).show();
                 } catch (Exception e){
                     e.printStackTrace();
                 }
                 Toast.makeText(context, "PIN password: " + pin, Toast.LENGTH_SHORT).show();
-                Toast.makeText(context,serverComunicate.comunicate(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(context,serverComunicate.comunicate(), Toast.LENGTH_LONG).show();
 
                 pin = ""; //reset password
             }
