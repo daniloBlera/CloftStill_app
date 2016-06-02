@@ -1,12 +1,22 @@
 package com.cloftstill.cloftstill.model;
 
 public class User {
+    private String name;
     private String simNumber;
     private String pinPassword;
     private UserType type;
     private String adminPassword;
     private String cpf;
     private String macAdress;
+
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public String getPinPassword() {
         return pinPassword;

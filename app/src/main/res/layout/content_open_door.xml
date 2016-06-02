@@ -12,12 +12,20 @@
     tools:context=".view.OpenDoorActivity"
     tools:showIn="@layout/activity_open_door">
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imgIcon"
+        android:src="@mipmap/cloftstill_icon"
+        android:layout_centerHorizontal="true"/>
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/open_door_btn"
         android:id="@+id/openDoorButton"
-        android:layout_marginTop="80dp"
+        android:layout_below="@+id/imgIcon"
+        android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true" />
 
     <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -83,10 +91,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/txtBtnSignUp"
-        android:text="Cadastre - se"
+        android:text="Ainda não cadastrado? Cadastre - se aqui"
         android:layout_marginTop="50dp"
-        android:textSize="20dp"
+        android:layout_centerHorizontal="true"
         android:layout_below="@+id/numpadLayout"
-        android:layout_alignStart="@+id/numpadLayout" />
+        android:layout_alignStart="@+id/numpadLayout"
+        android:textColor="@color/colorPrimaryDark" />
 
 </RelativeLayout>
