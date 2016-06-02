@@ -202,7 +202,6 @@ public class OpenDoorActivity extends AppCompatActivity {
                 getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo networkInfo = manager.getActiveNetworkInfo();
-
         return networkInfo.isAvailable();
     }
 

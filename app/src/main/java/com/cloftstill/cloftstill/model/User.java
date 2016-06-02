@@ -5,6 +5,7 @@ public class User {
     private String pinPassword;
     private UserType type;
     private String adminPassword;
+    private String cpf;
 
     public String getPinPassword() {
         return pinPassword;
@@ -36,5 +37,13 @@ public class User {
 
     public void setType(UserType type) {
         this.type = type;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
     }
 }
