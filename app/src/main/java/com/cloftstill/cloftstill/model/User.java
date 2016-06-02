@@ -6,6 +6,7 @@ public class User {
     private UserType type;
     private String adminPassword;
     private String cpf;
+    private String macAdress;
 
     public String getPinPassword() {
         return pinPassword;
@@ -46,4 +47,13 @@ public class User {
     public void setCpf(String cpf) {
         this.cpf = cpf;
     }
+
+    public String getMacAdress() {
+        return macAdress;
+    }
+
+    public void setMacAdress(String macAdress) {
+        this.macAdress = macAdress;
+    }
+
 }

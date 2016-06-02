@@ -2,6 +2,7 @@ package com.cloftstill.cloftstill.view;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -9,8 +10,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cloftstill.cloftstill.R;
+import com.cloftstill.cloftstill.model.Session;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -44,7 +47,8 @@ public class SignUpActivity extends AppCompatActivity {
         txtSerial = (TextView) findViewById(R.id.txtSerial);
         txtMac = (TextView) findViewById(R.id.txtMAC);
         spinnerUserType = (Spinner) findViewById(R.id.spinnerUserType);
-
+        txtMac.setText(txtMac.getText() + Session.getMacAdress());
+        txtSerial.setText(txtSerial.getText() + Session.getSerialNumber());
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -52,12 +56,16 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
 
-        ArrayAdapter adapter = new ArrayAdapter(this, R.layout.activity_sign_up, spinnerArray);
+        ArrayAdapter adapter = new ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, spinnerArray);
         spinnerUserType.setAdapter(adapter);
-        spinnerUserType.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        spinnerUserType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(Session.getContext(), spinnerArray[position], Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                Log.i("DEFAULT SELECTED", "default");
             }
         });
     }

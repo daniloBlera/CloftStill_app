@@ -1,6 +1,7 @@
 package com.cloftstill.cloftstill.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
@@ -14,14 +15,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.cloftstill.cloftstill.R;
 import com.cloftstill.cloftstill.controller.ServerComunicate;
+import com.cloftstill.cloftstill.model.Session;
 
 public class OpenDoorActivity extends AppCompatActivity {
 
     Context context = this;
     String pin = "";
+    private TextView txtSignUp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +33,21 @@ public class OpenDoorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_open_door);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        txtSignUp = (TextView) findViewById(R.id.txtBtnSignUp);
+        txtSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentGoToSignUp = new Intent(OpenDoorActivity.this, SignUpActivity.class);
+                startActivity(intentGoToSignUp);
+            }
+        });
+
+        Session.setMacAdress(getMACAddress());
+        Session.setContext(this);
+        TelephonyManager telemamanger = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        String simSerialNumber = telemamanger.getSimSerialNumber();
+        Session.setSerialNumber(simSerialNumber);
 
         final Button openDoorBtn = (Button) findViewById(R.id.openDoorButton);
         final Button numpad1 = (Button) findViewById(R.id.btn1);
@@ -117,9 +136,8 @@ public class OpenDoorActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    TelephonyManager telemamanger = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-                    String getSimNumber = telemamanger.getLine1Number();
-                    Toast.makeText(context, "SIM number: " + getSimNumber, Toast.LENGTH_SHORT).show();
+
+                    Toast.makeText(context, "SIM number: " + Session.getSerialNumber(), Toast.LENGTH_SHORT).show();
                 } catch (Exception e){
                     e.printStackTrace();
                 }
@@ -128,18 +146,14 @@ public class OpenDoorActivity extends AppCompatActivity {
 
                 TelephonyManager telMngr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 
-                String macAddr = getMACAddress();
-                String simCode = telMngr.getLine1Number();
-
-                String mensagemResposta = serverComunicate.comunicaAbertura(macAddr, simCode, pin);
+                String mensagemResposta = serverComunicate.comunicaAbertura(Session.getMacAdress(),Session.getSerialNumber(), pin);
 
                 if (mensagemResposta != null) {
                     Log.d("NOT NULL", mensagemResposta);
                     Toast.makeText(context, mensagemResposta, Toast.LENGTH_SHORT);
                 } else {
-                    Log.d("RETURNED NULL", "THIS FVCKING C0DE");
+                    Log.d("RETURNED NULL", "THIS C0DE");
                 }
-
                 pin = ""; //reset password
             }
         });
