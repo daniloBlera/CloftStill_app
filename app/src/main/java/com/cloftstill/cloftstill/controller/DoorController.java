@@ -29,17 +29,17 @@ public class DoorController {
     /**
      * Requisita a abertura do portao pela internet.
      */
-    public void requestOpen() {
-        try {
-            URL url = new URL("http://" + ServerInfo.ADDRESS + ":" + ServerInfo.PORT_NUMBER);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        } catch (MalformedURLException e) {
-            Log.d("ERRO", "MalformedURLException");
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    public void requestOpen() {
+//        try {
+//            URL url = new URL("http://" + ServerInfo.ENDPOINT + ":" + ServerInfo.PORT_NUMBER);
+//            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+//        } catch (MalformedURLException e) {
+//            Log.d("ERRO", "MalformedURLException");
+//            e.printStackTrace();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     /**
      * Obtem a mensagem para requisição HTTP

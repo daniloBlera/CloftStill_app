@@ -1,6 +1,13 @@
 package com.cloftstill.cloftstill.controller;
 
+import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
+import android.util.StringBuilderPrinter;
+
+import com.cloftstill.cloftstill.model.ServerInfo;
+import com.cloftstill.cloftstill.utility.StreamProcessor;
+import com.cloftstill.cloftstill.view.OpenDoorActivity;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -9,26 +16,67 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.ConnectException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.concurrent.ExecutionException;
 
 public class ServerComunicate {
+    private OpenDoorActivity theView;
 
     public String comunicate(){
 
         // isNetworkAvaliable();
 
         final LongRunningGetIO L = new LongRunningGetIO();
-        L.execute("http://172.16.206.96:5000/open/");
+//        L.execute("http://172.16.206.96:5000/open/");
+        String strUrl = String.format(
+                "http://%s:%s/open/", ServerInfo.ENDPOINT, ServerInfo.PORT_NUMBER);
+
+        L.execute(strUrl);
 
         try {
-            L.get(); // ESPERA EXECUTAR A ASYNC TASK
+            L.get();// ESPERA EXECUTAR A ASYNC TASK
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return L.getTexto();
 
+    }
+
+    public ServerComunicate(OpenDoorActivity theView) {
+        this.theView = theView;
+    }
+
+    public String comunicaAbertura(String enderecoMAC, String codigoSIM, String senha) {
+        JSONObject json =  new JSONObject();
+        final RESTfulPOST post = new RESTfulPOST();
+
+        try {
+            json.put("EnderecoMAC", enderecoMAC);
+            json.put("CodigoSIM", codigoSIM);
+            json.put("Senha", senha);
+
+            String url = String.format(
+                    "http://%s:%s/porta/abre/", ServerInfo.ENDPOINT, ServerInfo.PORT_NUMBER);
+
+            String arguments = json.toString();
+
+            post.requestPOST(url, json);
+
+        } catch (JSONException e) {
+            Log.e("EXCEPTION IN JSON PREP", e.getMessage());
+            return "MISSING ARGUMENTS";
+        }
+
+        return post.getResposta();
     }
 
     public class LongRunningGetIO extends AsyncTask<String, Void, String> {
@@ -43,37 +91,86 @@ public class ServerComunicate {
             this.texto = texto;
         }
 
+//        protected String getASCIIContentFromEntity(HttpEntity entity) throws IllegalStateException, IOException {
+//            InputStream in = entity.getContent();
+//            StringBuffer out = new StringBuffer();
+//            int n = 1;
+//            while (n > 0) {
+//                byte[] b = new byte[4096];
+//                n = in.read(b);
+//                if (n > 0) out.append(new String(b, 0, n));
+//            }
+//            return out.toString();
+//        }
 
-        protected String getASCIIContentFromEntity(HttpEntity entity) throws IllegalStateException, IOException {
-            InputStream in = entity.getContent();
-            StringBuffer out = new StringBuffer();
-            int n = 1;
-            while (n > 0) {
-                byte[] b = new byte[4096];
-                n = in.read(b);
-                if (n > 0) out.append(new String(b, 0, n));
-            }
-            return out.toString();
-        }
+//        @Override
+//        protected String doInBackground(String... params) {
+//            HttpClient httpClient = new DefaultHttpClient();
+//            HttpContext localContext = new BasicHttpContext();
+//            String urlString = params[0];
+//            HttpGet httpGet = new HttpGet(urlString);
+//            //String texto = null;
+//
+//            try {
+//                HttpResponse response = httpClient.execute(httpGet, localContext);
+//                HttpEntity entity = response.getEntity();
+//                texto = getASCIIContentFromEntity(entity);
+//
+//            } catch (Exception e) {
+//                return e.getLocalizedMessage();
+//            }
+//
+//            return texto;
+//        }
 
         @Override
         protected String doInBackground(String... params) {
-            HttpClient httpClient = new DefaultHttpClient();
-            HttpContext localContext = new BasicHttpContext();
-            String urlString = params[0];
-            HttpGet httpGet = new HttpGet(urlString);
-            //String texto = null;
+            HttpURLConnection urlConnection = null;
+            String response = null;
+            BufferedReader reader = null;
 
             try {
-                HttpResponse response = httpClient.execute(httpGet, localContext);
-                HttpEntity entity = response.getEntity();
-                texto = getASCIIContentFromEntity(entity);
+                String urlString = params[0];
+                URL url = new URL(urlString);
+
+                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("GET");
+
+                int responseCode = urlConnection.getResponseCode();
+
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    reader = new BufferedReader(
+                            new InputStreamReader(urlConnection.getInputStream()));
+
+                    response = StreamProcessor.getMessageFromReader(reader);
+                } else {
+                    response = Integer.toString(responseCode);
+                }
+
+                setTexto(response);
+
+            } catch (ConnectException e) {
+                Log.e("FALHA DE CONEXÃO", e.getMessage());
+                response = "A conexão com o servidor falhou (servidor offline?)";
 
             } catch (Exception e) {
-                return e.getLocalizedMessage();
+                e.printStackTrace();
+                response = e.getMessage();
+
+            } finally {
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException e) {}
+                }
+
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
             }
 
-            return texto;
+            setTexto(response);
+            return response;
         }
     }
 }

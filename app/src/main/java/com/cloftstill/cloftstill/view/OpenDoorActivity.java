@@ -3,10 +3,13 @@ package com.cloftstill.cloftstill.view;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,7 +43,7 @@ public class OpenDoorActivity extends AppCompatActivity {
         final Button numpad0 = (Button) findViewById(R.id.btn0);
         final Button numpadOK = (Button) findViewById(R.id.btnOK);
         final Button numpadErase = (Button) findViewById(R.id.btnErase);
-        final ServerComunicate serverComunicate = new ServerComunicate();
+        final ServerComunicate serverComunicate = new ServerComunicate(this);
 
         numpad0.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,6 +126,20 @@ public class OpenDoorActivity extends AppCompatActivity {
                 Toast.makeText(context, "PIN password: " + pin, Toast.LENGTH_SHORT).show();
                 Toast.makeText(context,serverComunicate.comunicate(), Toast.LENGTH_LONG).show();
 
+                TelephonyManager telMngr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+
+                String macAddr = getMACAddress();
+                String simCode = telMngr.getLine1Number();
+
+                String mensagemResposta = serverComunicate.comunicaAbertura(macAddr, simCode, pin);
+
+                if (mensagemResposta != null) {
+                    Log.d("NOT NULL", mensagemResposta);
+                    Toast.makeText(context, mensagemResposta, Toast.LENGTH_SHORT);
+                } else {
+                    Log.d("RETURNED NULL", "THIS FVCKING C0DE");
+                }
+
                 pin = ""; //reset password
             }
         });
@@ -187,5 +204,20 @@ public class OpenDoorActivity extends AppCompatActivity {
         NetworkInfo networkInfo = manager.getActiveNetworkInfo();
 
         return networkInfo.isAvailable();
+    }
+
+    /**
+     * Recupera o endereço MAC do aparelho.
+     *
+     * @return Endereço MAC da interface wireless do aparelho.
+     */
+    private String getMACAddress() {
+        WifiManager manager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        WifiInfo info = manager.getConnectionInfo();
+        return info.getMacAddress();
+    }
+
+    public void toastRequestMessage(String message) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT);
     }
 }
