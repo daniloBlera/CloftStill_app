@@ -16,4 +16,8 @@ public enum ServerInfo {
             default:            return "UNSPECIFIED";
         }
     }
+
+    public static String getURL() {
+        return "http://10.0.3.2:5000/";
+    }
 }

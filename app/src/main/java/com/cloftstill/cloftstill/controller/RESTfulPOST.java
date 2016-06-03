@@ -5,6 +5,13 @@ import android.util.Log;
 
 import com.cloftstill.cloftstill.utility.StreamProcessor;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -17,6 +24,14 @@ import java.io.OutputStreamWriter;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * Created by dcblera on 30/05/16.
@@ -32,110 +47,74 @@ public class RESTfulPOST {
         resposta = mensagem;
     }
 
-    public String requestPOST(String url, JSONObject data) {
+//    public String requestPOST(String url, JSONObject data) {
+    public String requestPOST(String url, String data) {
         Log.d("INSIDE REQUEST", "HEY-YEEE");
 
         final LongRunningGetIO longRun = new LongRunningGetIO();
 
-        longRun.execute(url, data.toString());
+//        longRun.execute(url, data.toString());
+        longRun.execute(url, data);
+//        longRun.execute(url, "AYYY");
 
+        String strget = "FAIL";
         try {
-            longRun.get();
+
+            strget = longRun.get();
         } catch (Exception e) {
             Log.e("EXCEPTION ON THREADING", e.getMessage());
             e.printStackTrace();
         }
 
+//        Log.d("longRun.get()", getResposta());
         return getResposta();
     }
 
-    private class LongRunningGetIO extends AsyncTask <String, Void, String> {
+    private class LongRunningGetIO extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... params) {
-            HttpURLConnection urlConnection = null;
-            String response = null;
-            BufferedWriter writer = null;
-            BufferedReader reader = null;
-
-            OutputStream os = null;
-            InputStream is = null;
+            String url = "https://10.0.3.2:5000/porta/abre/";
+            String responseMessae = null;
 
             try {
-                URL url = new URL(params[0]);
-                String arguments = params[1];
+                HttpClient client = HttpClientBuilder.create().build();
+                HttpPost post = new HttpPost(url);
 
-                urlConnection = (HttpURLConnection) url.openConnection();
+                // add header
+                post.setHeader("Content-Type", "application/json; charset=utf-8");
 
-                urlConnection.setRequestMethod("POST");
-                urlConnection.setDoOutput(true);
-                urlConnection.setDoInput(true);
-                urlConnection.setReadTimeout(10000);
-                urlConnection.setConnectTimeout(15000);
-                urlConnection.setFixedLengthStreamingMode(arguments.getBytes().length);
-                urlConnection.setRequestProperty("Content-Type", "application/json/charset=utf-8");
 
-                urlConnection.connect();
-                writer = new BufferedWriter(
-                        new OutputStreamWriter(urlConnection.getOutputStream()));
+                List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
+                urlParameters.add(new BasicNameValuePair("Senha", "senha4"));
+                urlParameters.add(new BasicNameValuePair("EnderecoMAC", "mac4"));
+                urlParameters.add(new BasicNameValuePair("CodigoSIM", "sim4"));
+                urlParameters.add(new BasicNameValuePair("PosicaoGPS", "gpsArg"));
 
-                writer.write(arguments);
+                post.setEntity(new UrlEncodedFormEntity(urlParameters));
 
-    //  É AQUI QUE AS COISAS FICAM DANDO ERRO
-    //            os = urlConnection.getOutputStream();
-    //            is = urlConnection.getInputStream();
-    //            byte[] bytes = params[1].getBytes();
-    //
-    //            os.write(bytes);
-    //            reader = new BufferedReader(
-    //                    new InputStreamReader(urlConnection.getInputStream()));
-    //
-    //            response = StreamProcessor.getMessageFromReader(reader);
-    //
-    //            return response;
-                response = "SO FAR NO ERRORS";
-            } catch (ConnectException e) {
-                Log.d("RESTfulPOST ConnExc", e.getMessage());
-                response = e.getMessage();
-            } catch (Exception e) {
-                Log.d("RestfulPOST Exc", e.getMessage());
+                HttpResponse response = client.execute(post);
+                Log.d("RESPONSE CODE", Integer.toString(response.getStatusLine().getStatusCode()));
+
+                BufferedReader rd = new BufferedReader(
+                        new InputStreamReader(response.getEntity().getContent()));
+
+                StringBuffer result = new StringBuffer();
+
+                String line = "";
+                while ((line = rd.readLine()) != null) {
+                    result.append(line);
+                }
+
+                setResposta(responseMessae);
+                responseMessae = result.toString();
+
+            }catch (Exception e) {
                 e.printStackTrace();
-                response = e.getMessage();
-
-            } finally {
-                if (is != null) {
-                    try {
-                        is.close();
-                    } catch (IOException e) {}
-                }
-
-                if (os != null) {
-                    try {
-                        os.close();
-                    } catch (IOException e) {}
-                }
-
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (IOException e) {
-                    }
-                }
-
-                if (writer != null) {
-                    try {
-                        writer.close();
-                    } catch (IOException e) {
-                    }
-                }
-
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
+                responseMessae = e.getMessage();
             }
 
-            setResposta(response);
-            return response;
+            return responseMessae;
         }
     }
 }

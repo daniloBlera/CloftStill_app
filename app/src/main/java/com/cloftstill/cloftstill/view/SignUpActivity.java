@@ -73,7 +73,8 @@ public class SignUpActivity extends AppCompatActivity {
                     user.setSimNumber(Session.getSerialNumber());
                     user.setType(userType);
                     user.setCpf(edtCPF.getText().toString());
-                    boolean isAllOk = signUpController.checkSignUp(user);
+//                    boolean isAllOk = signUpController.checkSignUp(user);
+
                 }
             }
         });
@@ -94,8 +95,8 @@ public class SignUpActivity extends AppCompatActivity {
         boolean ok = true;
         if (edtPIN.getText().toString().length() != 4){
             ok = false;
-            showErrorMessage("A senha deve ter 4 dígitos");
-        } else if (edtConfirmPIN.getText().toString().equals(edtConfirmPIN.getText().toString())){
+            showErrorMessage("A Senha deve ter 4 dígitos");
+        } else if (!edtPIN.getText().toString().equals(edtConfirmPIN.getText().toString())){
             ok = false;
             showErrorMessage("As senhas devem ser iguais");
         } else if (!CPFCheck.isCPF(edtCPF.getText().toString())){

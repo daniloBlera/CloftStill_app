@@ -21,10 +21,13 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 public class ServerComunicate {
@@ -56,27 +59,42 @@ public class ServerComunicate {
     }
 
     public String comunicaAbertura(String enderecoMAC, String codigoSIM, String senha) {
+        Log.d("PROGRESS", "INSIDE comunicaAbertura()");
+
         JSONObject json =  new JSONObject();
         final RESTfulPOST post = new RESTfulPOST();
 
+        String response = null;
+
         try {
+            String jsonBody = new String("'{\"Senha\":\"senha4\", \"EnderecoMAC\":\"mac4\", \"CodigoSIM\":\"sim4\", \"PosicaoGPS\":\"<ARG>\"}'");
+//            String jsonBody = "'{\"Senha\":\"senha4\", " +
+//                    "'EnderecoMAC':'mac4', " +
+//                    "'CodigoSIM':'sim4', " +
+//                    "'PosicaoGPS':'<ARG>'}";
+
             json.put("EnderecoMAC", enderecoMAC);
             json.put("CodigoSIM", codigoSIM);
             json.put("Senha", senha);
+            json.put("PosicaoGPS","<ARG>");
 
             String url = String.format(
                     "http://%s:%s/porta/abre/", ServerInfo.ENDPOINT, ServerInfo.PORT_NUMBER);
 
             String arguments = json.toString();
 
-            post.requestPOST(url, json);
+            Log.d("HERE STARTH", "post.requestPOST()");
+//            response = post.requestPOST(url, json);
+            response = post.requestPOST(url, jsonBody);
+            Log.d("HERE ENDETH", "post.requestPOST()");
 
         } catch (JSONException e) {
             Log.e("EXCEPTION IN JSON PREP", e.getMessage());
-            return "MISSING ARGUMENTS";
+            response =  "MISSING ARGUMENTS";
         }
 
         return post.getResposta();
+//        return response;
     }
 
     public class LongRunningGetIO extends AsyncTask<String, Void, String> {
@@ -161,7 +179,8 @@ public class ServerComunicate {
                 if (reader != null) {
                     try {
                         reader.close();
-                    } catch (IOException e) {}
+                    } catch (IOException e) {
+                    }
                 }
 
                 if (urlConnection != null) {

@@ -147,19 +147,30 @@ public class OpenDoorActivity extends AppCompatActivity {
                 } catch (Exception e){
                     e.printStackTrace();
                 }
-                Toast.makeText(context, "PIN password: " + pin, Toast.LENGTH_SHORT).show();
-                Toast.makeText(context,serverComunicate.comunicate(), Toast.LENGTH_LONG).show();
+//                Toast.makeText(context, "PIN password: " + pin, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context,serverComunicate.comunicate(), Toast.LENGTH_LONG).show();
+//
+//                TelephonyManager telMngr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+//
+////                String mensagemResposta = serverComunicate.comunicaAbertura(
+////                        Session.getMacAdress(),Session.getSerialNumber(), pin);
+//
+//                String mensagemResposta = serverComunicate.comunicaAbertura(
+//                       "mac4","sim4", "senha4");
+//
+//                if (mensagemResposta != null) {
+//                    Log.d("NOT NULL", mensagemResposta);
+//                    Toast.makeText(context, mensagemResposta, Toast.LENGTH_SHORT);
+//                } else {
+//                    Log.d("RETURNED NULL", "THIS C0DE");
+//                }
 
-                TelephonyManager telMngr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+                Log.d("SUPER_DUPER_ACTIVITY", "ANTES");
+                Intent intentStartCommunication = new Intent(OpenDoorActivity.this, ServerActivity.class);
+                startActivity(intentStartCommunication);
+                ServerActivity.openDoor();
+                Log.d("SUPER_DUPER_ACTIVITY", "DEPOIS");
 
-                String mensagemResposta = serverComunicate.comunicaAbertura(Session.getMacAdress(),Session.getSerialNumber(), pin);
-
-                if (mensagemResposta != null) {
-                    Log.d("NOT NULL", mensagemResposta);
-                    Toast.makeText(context, mensagemResposta, Toast.LENGTH_SHORT);
-                } else {
-                    Log.d("RETURNED NULL", "THIS C0DE");
-                }
                 pin = ""; //reset password
             }
         });
@@ -236,7 +247,7 @@ public class OpenDoorActivity extends AppCompatActivity {
     private void showAdminLoginDialog(Activity activity){
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle("Login");
-        builder.setMessage("Digite a senha de administrador");
+        builder.setMessage("Digite a Senha de administrador");
         final EditText prompt = new EditText(this);
         prompt.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_VARIATION_PASSWORD);
         builder.setView(prompt);
