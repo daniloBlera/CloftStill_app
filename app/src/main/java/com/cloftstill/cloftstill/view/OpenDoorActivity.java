@@ -1,25 +1,31 @@
 package com.cloftstill.cloftstill.view;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.telephony.TelephonyManager;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.cloftstill.cloftstill.R;
 import com.cloftstill.cloftstill.controller.ServerComunicate;
 import com.cloftstill.cloftstill.model.Session;
+import com.cloftstill.cloftstill.model.User;
 
 public class OpenDoorActivity extends AppCompatActivity {
 
@@ -192,7 +198,12 @@ public class OpenDoorActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_open_door, menu);
+        Session.setMenu(menu);
+        if (Session.getAdmin() == null){
+            getMenuInflater().inflate(R.menu.menu_open_door, menu);
+        } else {
+            getMenuInflater().inflate(R.menu.menu_open_door_admin, menu);
+        }
         return true;
     }
 
@@ -205,10 +216,53 @@ public class OpenDoorActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            finish();
+            Intent intentGoToSettings = new Intent(OpenDoorActivity.this, SettingsActivity.class);
+            startActivity(intentGoToSettings);
+        } else if (id == R.id.action_admin){
+            //ir para a tela de login do admin
+            showAdminLoginDialog(this);
+        } else if (id == R.id.action_logout){
+            //fazer as operações de logout do admin
+            Session.setAdmin(null);
+            restartActivity();
+        } else if (id == R.id.action_report){
+
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showAdminLoginDialog(Activity activity){
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle("Login");
+        builder.setMessage("Digite a senha de administrador");
+        final EditText prompt = new EditText(this);
+        prompt.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+        builder.setView(prompt);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                try {
+                    if (prompt.getText().toString().equals("1234")){
+                        Session.setAdmin(new User());
+                        restartActivity();
+                    } else {
+                        Toast.makeText(Session.getContext(), "Senha incorreta", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
+        builder.setNegativeButton("CANCELAR", null);
+        builder.show();
+    }
+
+    private void restartActivity(){
+        finish();
+        Intent intentRestart = new Intent(OpenDoorActivity.this, OpenDoorActivity.class);
+        startActivity(intentRestart);
     }
 
     private boolean isNetworkAvaliable() {

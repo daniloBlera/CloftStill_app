@@ -1,11 +1,14 @@
 package com.cloftstill.cloftstill.model;
 
 import android.content.Context;
+import android.view.Menu;
+
 public class Session {
     static User admin;
     static Context context;
     static String macAdress;
     static String serialNumber;
+    static Menu menu;
 
     public static void setMacAdress(String macAdress) {
         Session.macAdress = macAdress;
@@ -37,6 +40,14 @@ public class Session {
 
     public static User getAdmin() {
         return admin;
+    }
+
+    public static Menu getMenu() {
+        return menu;
+    }
+
+    public static void setMenu(Menu menu) {
+        Session.menu = menu;
     }
 
 }
