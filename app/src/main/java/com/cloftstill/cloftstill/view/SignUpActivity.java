@@ -73,7 +73,7 @@ public class SignUpActivity extends AppCompatActivity {
                     user.setSerialNumber(Session.getSerialNumber());
                     user.setType(userType);
                     user.setCpf(edtCPF.getText().toString());
-//                    boolean isAllOk = signUpController.checkSignUp(user);
+//                  boolean isAllOk = signUpController.checkSignUp(user);
 
                 }
             }
