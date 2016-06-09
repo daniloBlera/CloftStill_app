@@ -70,7 +70,7 @@ public class SignUpActivity extends AppCompatActivity {
                     user.setPinPassword(edtPIN.getText().toString());
                     user.setName(edtName.getText().toString());
                     user.setMacAdress(Session.getMacAdress());
-                    user.setSimNumber(Session.getSerialNumber());
+                    user.setSerialNumber(Session.getSerialNumber());
                     user.setType(userType);
                     user.setCpf(edtCPF.getText().toString());
 //                    boolean isAllOk = signUpController.checkSignUp(user);

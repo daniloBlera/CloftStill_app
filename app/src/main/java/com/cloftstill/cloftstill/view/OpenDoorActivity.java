@@ -168,7 +168,6 @@ public class OpenDoorActivity extends AppCompatActivity {
                 Log.d("SUPER_DUPER_ACTIVITY", "ANTES");
                 Intent intentStartCommunication = new Intent(OpenDoorActivity.this, ServerActivity.class);
                 startActivity(intentStartCommunication);
-                ServerActivity.openDoor();
                 Log.d("SUPER_DUPER_ACTIVITY", "DEPOIS");
 
                 pin = ""; //reset password

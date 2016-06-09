@@ -22,7 +22,7 @@ public class DoorController {
     public void createUser(String pin, String phoneNumber){
         User user = new User();
         user.setPinPassword(pin);
-        user.setSimNumber(phoneNumber);
+        user.setSerialNumber(phoneNumber);
 
     }
 
