@@ -238,6 +238,9 @@ public class OpenDoorActivity extends AppCompatActivity {
             restartActivity();
         } else if (id == R.id.action_report){
 
+        } else if (id == R.id.action_users){
+            Intent intentGoUsers = new Intent(OpenDoorActivity.this, UsersActivity.class);
+            startActivity(intentGoUsers);
         }
 
         return super.onOptionsItemSelected(item);
