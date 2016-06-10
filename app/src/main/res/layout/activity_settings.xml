@@ -8,7 +8,57 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.cloftstill.cloftstill.view.SettingsActivity">
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imgIcon"
+        android:src="@mipmap/cloftstill_icon"
+        android:layout_centerHorizontal="true"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/txtUserName"
+        android:layout_below="@+id/imgIcon"
+        android:text="NOME:"
+        android:layout_marginTop="20dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/txtUserCPF"
+        android:layout_below="@+id/txtUserName"
+        android:text="CPF: "
+        android:layout_marginTop="15dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txtUserCPF"
+        android:text="SERIAL SIM: "
+        android:id="@+id/txtSerial"
+        android:layout_marginTop="15dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/txtMAC"
+        android:layout_below="@+id/txtSerial"
+        android:text="ENDEREÇO MAC: "
+        android:layout_marginTop="15dp"/>
 
+    <ImageButton
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:id="@+id/imageButton"
+        android:background="@android:drawable/checkbox_on_background"
+        android:layout_alignTop="@+id/textView"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Salvar Alterações"
+        android:id="@+id/textView"
+        android:layout_alignParentBottom="true"
+        android:layout_toStartOf="@+id/imageButton" />
 
 
 </RelativeLayout>
