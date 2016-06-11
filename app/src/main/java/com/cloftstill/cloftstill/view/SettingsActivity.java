@@ -24,10 +24,13 @@ public class SettingsActivity extends AppCompatActivity {
     private FloatingActionMenu materialDesignFAM;
     private FloatingActionButton alterarNome;
     private FloatingActionButton alterarSenha;
+    private android.support.design.widget.FloatingActionButton saveChanges;
     private TextView txtNome;
     private TextView txtCPF;
     private TextView txtSerialSim;
     private TextView txtMac;
+    private static String name;
+    private static String password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +43,14 @@ public class SettingsActivity extends AppCompatActivity {
         txtCPF = (TextView) findViewById(R.id.txtUserCPF);
         txtSerialSim = (TextView) findViewById(R.id.txtSerial);
         txtMac = (TextView) findViewById(R.id.txtMAC);
+        saveChanges = (android.support.design.widget.FloatingActionButton) findViewById(R.id.floatingOk);
+
+        saveChanges.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO enviar alterações pra o banco, name and password
+            }
+        });
 
         txtMac.setText(txtMac.getText() + Session.getMacAdress());
         txtSerialSim.setText(txtSerialSim.getText() + Session.getSerialNumber());
@@ -75,7 +86,7 @@ public class SettingsActivity extends AppCompatActivity {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                //Implementar Mudar Nome
+                SettingsActivity.name = prompt.getText().toString();
             }
         });
         builder.setNegativeButton("CANCELAR", null);
@@ -115,10 +126,14 @@ public class SettingsActivity extends AppCompatActivity {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                //Implementar alterar senha
+                SettingsActivity.password = prompt.getText().toString();
             }
         });
         builder.setNegativeButton("CANCELAR", null);
         builder.show();
+    }
+    private static void setAtributtes(String name, String password){
+        SettingsActivity.name = name;
+        SettingsActivity.password = password;
     }
 }

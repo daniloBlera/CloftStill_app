@@ -257,6 +257,7 @@ public class OpenDoorActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 try {
+
                     if (prompt.getText().toString().equals("1234")){
                         Session.setAdmin(new User());
                         restartActivity();
