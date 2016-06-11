@@ -2,6 +2,7 @@ package com.cloftstill.cloftstill.view;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -79,6 +80,8 @@ public class SignUpActivity extends AppCompatActivity {
                 }
             }
         });
+        edtPIN.setInputType(InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+        edtConfirmPIN.setInputType(InputType.TYPE_NUMBER_VARIATION_PASSWORD);
         ArrayAdapter adapter = new ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, spinnerArray);
         spinnerUserType.setAdapter(adapter);
         spinnerUserType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

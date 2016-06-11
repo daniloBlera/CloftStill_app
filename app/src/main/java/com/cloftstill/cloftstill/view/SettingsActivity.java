@@ -36,6 +36,7 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        name = "Ricardo Lucas R. M. da Silva";
         materialDesignFAM = (FloatingActionMenu) findViewById(R.id.floatingOptions);
         alterarNome = (FloatingActionButton) findViewById(R.id.material_design_floating_action_menu_item1);
         alterarSenha = (FloatingActionButton) findViewById(R.id.material_design_floating_action_menu_item2);
@@ -44,7 +45,8 @@ public class SettingsActivity extends AppCompatActivity {
         txtSerialSim = (TextView) findViewById(R.id.txtSerial);
         txtMac = (TextView) findViewById(R.id.txtMAC);
         saveChanges = (android.support.design.widget.FloatingActionButton) findViewById(R.id.floatingOk);
-
+        txtCPF.setText(txtCPF.getText() + "10811008428");
+        txtNome.setText(txtNome.getText() + name);
         saveChanges.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

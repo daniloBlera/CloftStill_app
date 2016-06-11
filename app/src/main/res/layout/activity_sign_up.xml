@@ -51,7 +51,8 @@
         android:layout_below="@+id/edtCPf"
         android:layout_centerHorizontal="true"
         android:hint="Senha Numérica(4 dígitos)"
-        android:inputType="number"/>
+        android:inputType="number"
+        />
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

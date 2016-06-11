@@ -237,7 +237,9 @@ public class OpenDoorActivity extends AppCompatActivity {
             Session.setAdmin(null);
             restartActivity();
         } else if (id == R.id.action_report){
-
+            finish();
+            Intent intentGoReport = new Intent(OpenDoorActivity.this, ReportActivity.class);
+            startActivity(intentGoReport);
         } else if (id == R.id.action_users){
             Intent intentGoUsers = new Intent(OpenDoorActivity.this, UsersActivity.class);
             startActivity(intentGoUsers);
