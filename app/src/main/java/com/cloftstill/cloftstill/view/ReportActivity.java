@@ -12,18 +12,17 @@ public class ReportActivity extends AppCompatActivity {
 
     public String urlAgua;
     private WebView grafico;
-    private String customHtml;
-
+    private static String rolls;
+    private String startHTLM;
+    private String endHTML;
+    private String fullHTML;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
 
-        String strURL;
-
-
-        customHtml = "<html>"
+        startHTLM = "<html>"
                 + "<head>"
                 + "<script type=\"text/javascript\" src=\"https://www.gstatic.com/charts/loader.js\"></script>" +
                 "<script type=\"text/javascript\">" +
@@ -37,17 +36,8 @@ public class ReportActivity extends AppCompatActivity {
                 "    dataTable.addColumn({ type: 'string', id: 'Name' });" +
                 "    dataTable.addColumn({ type: 'date', id: 'Start' });" +
                 "    dataTable.addColumn({ type: 'date', id: 'End' });" +
-                "    dataTable.addRows([" +
-                "      [ 'Ful',  'CSS',    new Date(0,0,0,7,0,0),  new Date(0,0,0,9,0,0) ]," +
-                "      [ 'Ful',  'Intro',    new Date(0,0,0,14,30,0), new Date(0,0,0,16,0,0) ]," +
-                "      [ 'Ful',  'Java', new Date(0,0,0,16,30,0), new Date(0,0,0,23,0,0) ]," +
-                "      [ 'Cic', 'Perl',   new Date(0,0,0,12,30,0), new Date(0,0,0,14,0,0) ]," +
-                "      [ 'Cic', 'Perl2',       new Date(0,0,0,14,30,0), new Date(0,0,0,16,0,0) ]," +
-                "      [ 'Cic', 'Perl3',        new Date(0,0,0,16,30,0), new Date(0,0,0,18,0,0) ]," +
-                "      [ 'Joao',   'G',       new Date(0,0,0,3,30,0), new Date(0,0,0,15,0,0) ]," +
-                "      [ 'Bel',   'G',       new Date(0,0,0,12,30,0), new Date(0,0,0,14,0,0) ]," +
-                "      [ 'Bel',   'Clo',             new Date(0,0,0,14,30,0), new Date(0,0,0,16,0,0) ]," +
-                "      [ 'Bel',   'App',          new Date(0,0,0,16,30,0), new Date(0,0,0,18,30,0) ]]);" +
+                "    dataTable.addRows([";
+        endHTML = "      ]);" +
                 "    var options = {" +
                 "      timeline: { singleColor: 'lightblue' }," +
                 "    };" +
@@ -60,21 +50,22 @@ public class ReportActivity extends AppCompatActivity {
                 + "</body>"
                 + "</html>";
 
-
         grafico = (WebView) findViewById(R.id.reportWebView);
-
+        fullHTML = startHTLM + rolls + endHTML;
         WebSettings webSettings = grafico.getSettings();
         webSettings.setJavaScriptEnabled(true);
         grafico.requestFocusFromTouch();
-        grafico.loadDataWithBaseURL("file:///android_asset/", customHtml, "text/html", "utf-8", null);
+        grafico.loadDataWithBaseURL("file:///android_asset/", fullHTML, "text/html", "utf-8", null);
 
     }
-
     @Override
     public void onBackPressed() {
         finish();
         Intent intentBackOpenDoor = new Intent(ReportActivity.this, OpenDoorActivity.class);
         startActivity(intentBackOpenDoor);
+    }
+    public static void setRolls(String rolls) {
+        ReportActivity.rolls = rolls;
     }
 }
 
