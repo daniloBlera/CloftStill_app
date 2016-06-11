@@ -18,6 +18,7 @@ import com.cloftstill.cloftstill.model.Session;
 import com.cloftstill.cloftstill.model.User;
 import com.cloftstill.cloftstill.controller.CPFCheck;
 import com.cloftstill.cloftstill.model.UserType;
+import android.support.design.widget.FloatingActionButton;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -26,7 +27,7 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText edtPIN;
     private EditText edtConfirmPIN;
     private EditText edtCell;
-    private Button btnSignUp;
+    private FloatingActionButton btnSignUp;
     private TextView txtSerial;
     private TextView txtMac;
     private Spinner spinnerUserType;
@@ -56,7 +57,7 @@ public class SignUpActivity extends AppCompatActivity {
         edtPIN = (EditText) findViewById(R.id.edtPin);
         edtConfirmPIN = (EditText) findViewById(R.id.edtConfirmPin);
         edtCell = (EditText) findViewById(R.id.edtCellPhone);
-        btnSignUp = (Button) findViewById(R.id.btnSingUp);
+        btnSignUp = (FloatingActionButton) findViewById(R.id.fabOk);
         txtSerial = (TextView) findViewById(R.id.txtSerial);
         txtMac = (TextView) findViewById(R.id.txtMAC);
         spinnerUserType = (Spinner) findViewById(R.id.spinnerUserType);
