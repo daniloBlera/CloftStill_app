@@ -1,5 +1,6 @@
 package com.cloftstill.cloftstill.view;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
@@ -7,7 +8,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -22,6 +22,7 @@ import com.cloftstill.cloftstill.model.UserType;
 import android.support.design.widget.FloatingActionButton;
 
 public class SignUpActivity extends AppCompatActivity {
+    Context thisContext = this;
 
     private EditText edtName;
     private EditText edtCPF;
@@ -50,7 +51,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         userTypeArray = new UserType[3];
         userTypeArray[0] = UserType.ADMIN;
-        userTypeArray[1] = UserType.COMMON;
+        userTypeArray[1] = UserType.WORKER;
         userTypeArray[2] = UserType.VISIT;
 
         edtName = (EditText) findViewById(R.id.edtName);
@@ -74,8 +75,17 @@ public class SignUpActivity extends AppCompatActivity {
                     user.setMacAdress(Session.getMacAdress());
                     user.setSerialNumber(Session.getSerialNumber());
                     user.setType(userType);
+                    user.setCellNumber(edtCell.getText().toString());
                     user.setCpf(edtCPF.getText().toString());
-//                  boolean isAllOk = signUpController.checkSignUp(user);
+
+                    try {
+                        Log.d("SIGNUP", "DENTRO");
+                        String response = SignUpController.requestSignUp(user);
+                        Toast.makeText(thisContext, response, Toast.LENGTH_LONG).show();
+                    } catch (Exception e) {
+                        Log.d("SIGNUP", "FORA_TEMER");
+                        e.printStackTrace();
+                    }
 
                 }
             }

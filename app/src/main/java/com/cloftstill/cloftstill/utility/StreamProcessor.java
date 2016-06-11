@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 
 /**
- * Created by dcblera on 30/05/16.
+ * Fornece métodos para a extração de Strings a partir de Streams.
  */
 public class StreamProcessor {
 
@@ -13,7 +13,7 @@ public class StreamProcessor {
      *
      * @param reader BufferedReader a ser lido.
      * @return Mensagem armazenada no BufferedReader.
-     * @throws IOException
+     * @throws IOException Caso o Reader seja fechado ou algum outro problema ocorra.
      */
     public static String getMessageFromReader(BufferedReader reader) throws IOException {
         String line;

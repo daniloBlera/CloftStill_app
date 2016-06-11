@@ -29,7 +29,7 @@ public class DoorController {
     /**
      * Requisita a abertura do portao pela internet.
      */
-//    public void requestOpen() {
+//    public void requestSignUp() {
 //        try {
 //            URL url = new URL("http://" + ServerInfo.ENDPOINT + ":" + ServerInfo.PORT_NUMBER);
 //            HttpURLConnection connection = (HttpURLConnection) url.openConnection();

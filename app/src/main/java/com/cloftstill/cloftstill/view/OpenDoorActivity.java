@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
@@ -23,13 +25,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.cloftstill.cloftstill.R;
+import com.cloftstill.cloftstill.controller.RemoteDoorController;
 import com.cloftstill.cloftstill.controller.ServerComunicate;
+import com.cloftstill.cloftstill.controller.UserValidityController;
+import com.cloftstill.cloftstill.model.Authenticable;
 import com.cloftstill.cloftstill.model.Session;
 import com.cloftstill.cloftstill.model.User;
 
 public class OpenDoorActivity extends AppCompatActivity {
-
-    Context context = this;
+    Context thisContext = this;
     String pin = "";
     private TextView txtSignUp;
 
@@ -51,7 +55,7 @@ public class OpenDoorActivity extends AppCompatActivity {
 
         Session.setMacAdress(getMACAddress());
         Session.setContext(this);
-        TelephonyManager telemamanger = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        final TelephonyManager telemamanger = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         String simSerialNumber = telemamanger.getSimSerialNumber();
         Session.setSerialNumber(simSerialNumber);
 
@@ -143,12 +147,12 @@ public class OpenDoorActivity extends AppCompatActivity {
             public void onClick(View v) {
                 try {
 
-                    Toast.makeText(context, "SIM number: " + Session.getSerialNumber(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(thisContext, "SIM number: " + Session.getSerialNumber(), Toast.LENGTH_SHORT).show();
                 } catch (Exception e){
                     e.printStackTrace();
                 }
-//                Toast.makeText(context, "PIN password: " + pin, Toast.LENGTH_SHORT).show();
-//                Toast.makeText(context,serverComunicate.comunicate(), Toast.LENGTH_LONG).show();
+//                Toast.makeText(thisContext, "PIN password: " + pin, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(thisContext,serverComunicate.comunicate(), Toast.LENGTH_LONG).show();
 //
 //                TelephonyManager telMngr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 //
@@ -160,26 +164,41 @@ public class OpenDoorActivity extends AppCompatActivity {
 //
 //                if (mensagemResposta != null) {
 //                    Log.d("NOT NULL", mensagemResposta);
-//                    Toast.makeText(context, mensagemResposta, Toast.LENGTH_SHORT);
+//                    Toast.makeText(thisContext, mensagemResposta, Toast.LENGTH_SHORT);
 //                } else {
 //                    Log.d("RETURNED NULL", "THIS C0DE");
 //                }
 
-                Log.d("SUPER_DUPER_ACTIVITY", "ANTES");
-                Intent intentStartCommunication = new Intent(OpenDoorActivity.this, ServerActivity.class);
-                startActivity(intentStartCommunication);
-                Log.d("SUPER_DUPER_ACTIVITY", "DEPOIS");
+//                Log.d("SUPER_DUPER_ACTIVITY", "ANTES");
+//                Intent intentStartCommunication = new Intent(OpenDoorActivity.this, ServerActivity.class);
+//                startActivity(intentStartCommunication);
+//                Log.d("SUPER_DUPER_ACTIVITY", "DEPOIS");
+
+                try {
+                    String resultado = "STRING_INICIAL";
+
+                    WifiManager wifiManager = (WifiManager) getSystemService(thisContext.WIFI_SERVICE);
+                    WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+                    String macAddress = wifiInfo.getMacAddress();
+
+                    TelephonyManager telManager = (TelephonyManager) getSystemService(thisContext.TELEPHONY_SERVICE);
+                    String simSerialNO = telManager.getSimSerialNumber();
+                    //Dados de um usuário cadastrado no banco
+                    resultado = RemoteDoorController.requestOpen(
+                            "mac1", "sim1", "senha1", "LOCALIZACAO");
+
+                    Toast.makeText(thisContext, resultado, Toast.LENGTH_LONG).show();
+                    Log.d("RESULTADO_LOG", resultado);
+                    Log.d("MAC", macAddress);
+                    Log.d("SERIAL", simSerialNO);
+                } catch (Exception e) {
+                    Toast.makeText(thisContext, e.getMessage(), Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
+                }
 
                 pin = ""; //reset password
             }
         });
-
-        /**
-         * Liberar permissões
-         */
-//        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-//        StrictMode.setThreadPolicy(policy);
-
 
         assert openDoorBtn != null;
         openDoorBtn.setOnClickListener(new View.OnClickListener() {
@@ -187,7 +206,7 @@ public class OpenDoorActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //t = L.getTexto();
                 //DoorController controller = new DoorController();
-                //controller.requestOpen();
+                //controller.requestSignUp();
                 numpad0.setEnabled(true);
                 numpad1.setEnabled(true);
                 numpad2.setEnabled(true);
@@ -260,8 +279,17 @@ public class OpenDoorActivity extends AppCompatActivity {
 
     private void showAdminLoginDialog(Activity activity){
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+
+        WifiManager wifiManagerAdm = (WifiManager) getSystemService(thisContext.WIFI_SERVICE);
+        WifiInfo wifiInfo = wifiManagerAdm.getConnectionInfo();
+        final String macAddressAdm = wifiInfo.getMacAddress();
+
+        TelephonyManager telManagerAdm = (TelephonyManager) getSystemService(thisContext.TELEPHONY_SERVICE);
+        final String simSerialNOAdm = telManagerAdm.getSimSerialNumber();
+
         builder.setTitle("Login");
         builder.setMessage("Digite a Senha de administrador");
+
         final EditText prompt = new EditText(this);
         prompt.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_VARIATION_PASSWORD);
         builder.setView(prompt);
@@ -269,13 +297,21 @@ public class OpenDoorActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 try {
+                    String password = prompt.getText().toString();
 
-                    if (prompt.getText().toString().equals("1234")){
-                        Session.setAdmin(new User());
-                        restartActivity();
-                    } else {
-                        Toast.makeText(Session.getContext(), "Senha incorreta", Toast.LENGTH_SHORT).show();
-                    }
+                    Authenticable authenticable = new Authenticable(
+                            password, macAddressAdm, simSerialNOAdm);
+
+                    String response = UserValidityController.requestValidityCheck(authenticable);
+
+                    Toast.makeText(thisContext, response, Toast.LENGTH_LONG).show();
+
+//                    if (prompt.getText().toString().equals("1234")){
+//                        Session.setAdmin(new User());
+//                        restartActivity();
+//                    } else {
+//                        Toast.makeText(Session.getContext(), "Senha incorreta", Toast.LENGTH_SHORT).show();
+//                    }
                 } catch (Exception e){
                     e.printStackTrace();
                 }
@@ -311,6 +347,6 @@ public class OpenDoorActivity extends AppCompatActivity {
     }
 
     public void toastRequestMessage(String message) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT);
+        Toast.makeText(thisContext, message, Toast.LENGTH_SHORT);
     }
 }
