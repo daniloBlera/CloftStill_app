@@ -15,7 +15,6 @@ import okhttp3.Response;
  * Classe responsavel por executar requests HTTP ao servidor.
  */
 public class HttpRequestHandler {
-//    public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     public static final MediaType JSON = MediaType.parse("application/json");
     /**
      * Executa uma requisição POST na url fornecida e com o corpo json.

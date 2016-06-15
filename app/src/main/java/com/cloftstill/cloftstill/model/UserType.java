@@ -11,11 +11,11 @@ public enum UserType {
             case ADMIN:
                 return "ADMIN";
             case WORKER:
-                return "VISITANTE";
+                return "FUNCIONARIO";
             case VISIT:
-                return "visit";
+                return "VISITANTE";
             default:
-                return "visit";
+                return "VISITANTE";
         }
     }
 }

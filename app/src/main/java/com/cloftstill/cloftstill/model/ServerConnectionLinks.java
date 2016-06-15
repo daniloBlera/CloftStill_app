@@ -16,7 +16,7 @@ public enum ServerConnectionLinks {
     LOCALHOST_DOMAIN,
     OPEN_DOOR_PATH,
     REQUEST_SIGNUP,
-    VALIDATE_USER;
+    CHECK_IF_ADMIN;
 
     @Override
     public String toString() {
@@ -27,7 +27,7 @@ public enum ServerConnectionLinks {
                 return "porta/abre/";
             case REQUEST_SIGNUP:
                 return "solicitacao/adiciona/";
-            case VALIDATE_USER:
+            case CHECK_IF_ADMIN:
                 return "pessoa/valida/";
             default:
                 return "DEFAULT_OPTION";

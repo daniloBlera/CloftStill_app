@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.cloftstill.cloftstill.R;
 import com.cloftstill.cloftstill.controller.SignUpController;
 import com.cloftstill.cloftstill.model.Session;
+import com.cloftstill.cloftstill.model.SignupResponse;
 import com.cloftstill.cloftstill.model.User;
 import com.cloftstill.cloftstill.controller.CPFCheck;
 import com.cloftstill.cloftstill.model.UserType;
@@ -46,8 +47,8 @@ public class SignUpActivity extends AppCompatActivity {
 
         spinnerArray = new String[3];
         spinnerArray[0] = "Administrador";
-        spinnerArray[1] = "Comum";
-        spinnerArray[2] = "Visita";
+        spinnerArray[1] = "Funcionário";
+        spinnerArray[2] = "Visitante";
 
         userTypeArray = new UserType[3];
         userTypeArray[0] = UserType.ADMIN;
@@ -79,11 +80,12 @@ public class SignUpActivity extends AppCompatActivity {
                     user.setCpf(edtCPF.getText().toString());
 
                     try {
-                        Log.d("SIGNUP", "DENTRO");
-                        String response = SignUpController.requestSignUp(user);
-                        Toast.makeText(thisContext, response, Toast.LENGTH_LONG).show();
+                        Log.d("SIGNUP_ACTIVITY", "DENTRO");
+                        SignupResponse response = SignUpController.requestSignUp(user);
+                        Toast.makeText(thisContext, response.toString(), Toast.LENGTH_LONG).show();
+                        // TODO Finalizar activity e voltar para a tela de abrir porta
                     } catch (Exception e) {
-                        Log.d("SIGNUP", "FORA_TEMER");
+                        Log.d("SIGNUP_ACTIVITY", "FORA_TEMER");
                         e.printStackTrace();
                     }
 
@@ -92,7 +94,10 @@ public class SignUpActivity extends AppCompatActivity {
         });
         edtPIN.setInputType(InputType.TYPE_NUMBER_VARIATION_PASSWORD);
         edtConfirmPIN.setInputType(InputType.TYPE_NUMBER_VARIATION_PASSWORD);
-        ArrayAdapter adapter = new ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, spinnerArray);
+
+        ArrayAdapter adapter = new ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item,
+                spinnerArray);
+
         spinnerUserType.setAdapter(adapter);
         spinnerUserType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

@@ -10,6 +10,38 @@ public class User {
     private String cpf;
     private String macAdress;
 
+    public enum Fields {
+        NAME,
+        PASSWORD,
+        MAC_ADDRESS,
+        SIM_SERIAL_NUMBER,
+        TYPE,
+        PHONE_NUMBER,
+        CPF;
+
+        @Override
+        public String toString() {
+            switch (this) {
+            case NAME:
+                return "Nome";
+            case PASSWORD:
+                return "Senha";
+            case MAC_ADDRESS:
+                return "EnderecoMAC";
+            case SIM_SERIAL_NUMBER:
+                return "CodigoSIM";
+            case TYPE:
+                return "Tipo";
+            case PHONE_NUMBER:
+                return "Celular";
+            case CPF:
+                return "CPF";
+            default:
+                return "UNDEFINED";
+            }
+        }
+    }
+
 
     public String getName() {
         return name;

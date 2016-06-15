@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
@@ -27,8 +25,11 @@ import android.widget.Toast;
 import com.cloftstill.cloftstill.R;
 import com.cloftstill.cloftstill.controller.RemoteDoorController;
 import com.cloftstill.cloftstill.controller.ServerComunicate;
-import com.cloftstill.cloftstill.controller.UserValidityController;
+import com.cloftstill.cloftstill.controller.AdminValidityController;
 import com.cloftstill.cloftstill.model.Authenticable;
+import com.cloftstill.cloftstill.model.IsAdminResponse;
+import com.cloftstill.cloftstill.model.OpenDoorResponse;
+import com.cloftstill.cloftstill.model.ServerResponse;
 import com.cloftstill.cloftstill.model.Session;
 import com.cloftstill.cloftstill.model.User;
 
@@ -55,8 +56,11 @@ public class OpenDoorActivity extends AppCompatActivity {
 
         Session.setMacAdress(getMACAddress());
         Session.setContext(this);
-        final TelephonyManager telemamanger = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        String simSerialNumber = telemamanger.getSimSerialNumber();
+
+        final TelephonyManager telemamanger = (TelephonyManager) getSystemService(
+                Context.TELEPHONY_SERVICE);
+
+        final String simSerialNumber = telemamanger.getSimSerialNumber();
         Session.setSerialNumber(simSerialNumber);
 
         final Button openDoorBtn = (Button) findViewById(R.id.openDoorButton);
@@ -146,51 +150,31 @@ public class OpenDoorActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
+                    String macAddress = getMACAddress();
+                    String simSerialNO = getSimCardSerial();
 
-                    Toast.makeText(thisContext, "SIM number: " + Session.getSerialNumber(), Toast.LENGTH_SHORT).show();
-                } catch (Exception e){
-                    e.printStackTrace();
-                }
-//                Toast.makeText(thisContext, "PIN password: " + pin, Toast.LENGTH_SHORT).show();
-//                Toast.makeText(thisContext,serverComunicate.comunicate(), Toast.LENGTH_LONG).show();
-//
-//                TelephonyManager telMngr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-//
-////                String mensagemResposta = serverComunicate.comunicaAbertura(
-////                        Session.getMacAdress(),Session.getSerialNumber(), pin);
-//
-//                String mensagemResposta = serverComunicate.comunicaAbertura(
-//                       "mac4","sim4", "senha4");
-//
-//                if (mensagemResposta != null) {
-//                    Log.d("NOT NULL", mensagemResposta);
-//                    Toast.makeText(thisContext, mensagemResposta, Toast.LENGTH_SHORT);
-//                } else {
-//                    Log.d("RETURNED NULL", "THIS C0DE");
-//                }
+                    Authenticable authenticable = new Authenticable(pin.toString(), macAddress,
+                            simSerialNO);
 
-//                Log.d("SUPER_DUPER_ACTIVITY", "ANTES");
-//                Intent intentStartCommunication = new Intent(OpenDoorActivity.this, ServerActivity.class);
-//                startActivity(intentStartCommunication);
-//                Log.d("SUPER_DUPER_ACTIVITY", "DEPOIS");
+                    ServerResponse doorResponse = RemoteDoorController.requestOpen(authenticable,
+                            "LOCALIZACAO"); //TODO - Implementar Localização
 
-                try {
-                    String resultado = "STRING_INICIAL";
+                    String message = null;
 
-                    WifiManager wifiManager = (WifiManager) getSystemService(thisContext.WIFI_SERVICE);
-                    WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-                    String macAddress = wifiInfo.getMacAddress();
+                    if (doorResponse == ServerResponse.INCORRECT_PASSWORD) {
+                        //TODO - Colocar mensagens repetidas/comuns no xml de Strings
+                        message = "Senha incorreta!";
+                    } else if (doorResponse == ServerResponse.UNREGISTERED_USER) {
+                        message = "Este dispositivo não se encontra cadastrado no sistema!";
+                    } else if(doorResponse == ServerResponse.REQUEST_SENT) {
+                        message = "Sinal de abertura enviado!";
+                    } else if (doorResponse == ServerResponse.INTERNAL_ERROR) {
+                        message = "Um erro interno ocorreu no servidor, tente novamente mais tarde :(";
+                    } // TODO Implementar ACESSO_NEGADO no servidor
 
-                    TelephonyManager telManager = (TelephonyManager) getSystemService(thisContext.TELEPHONY_SERVICE);
-                    String simSerialNO = telManager.getSimSerialNumber();
-                    //Dados de um usuário cadastrado no banco
-                    resultado = RemoteDoorController.requestOpen(
-                            "mac1", "sim1", "senha1", "LOCALIZACAO");
+                    Log.d("OpenDoorACTIVITY", message);
+                    Toast.makeText(thisContext, message, Toast.LENGTH_LONG).show();
 
-                    Toast.makeText(thisContext, resultado, Toast.LENGTH_LONG).show();
-                    Log.d("RESULTADO_LOG", resultado);
-                    Log.d("MAC", macAddress);
-                    Log.d("SERIAL", simSerialNO);
                 } catch (Exception e) {
                     Toast.makeText(thisContext, e.getMessage(), Toast.LENGTH_LONG).show();
                     e.printStackTrace();
@@ -277,15 +261,11 @@ public class OpenDoorActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void showAdminLoginDialog(Activity activity){
+    private void showAdminLoginDialog(Activity activity) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
-        WifiManager wifiManagerAdm = (WifiManager) getSystemService(thisContext.WIFI_SERVICE);
-        WifiInfo wifiInfo = wifiManagerAdm.getConnectionInfo();
-        final String macAddressAdm = wifiInfo.getMacAddress();
-
-        TelephonyManager telManagerAdm = (TelephonyManager) getSystemService(thisContext.TELEPHONY_SERVICE);
-        final String simSerialNOAdm = telManagerAdm.getSimSerialNumber();
+        final String macAddressAdm = getMACAddress();
+        final String simSerialNOAdm = getSimCardSerial();
 
         builder.setTitle("Login");
         builder.setMessage("Digite a Senha de administrador");
@@ -302,16 +282,19 @@ public class OpenDoorActivity extends AppCompatActivity {
                     Authenticable authenticable = new Authenticable(
                             password, macAddressAdm, simSerialNOAdm);
 
-                    String response = UserValidityController.requestValidityCheck(authenticable);
+                    IsAdminResponse isAdminResponse =
+                            AdminValidityController.requestAdminCheck(authenticable);
 
-                    Toast.makeText(thisContext, response, Toast.LENGTH_LONG).show();
+                    if (isAdminResponse == IsAdminResponse.TRUE) {
+                        Session.setAdmin(new User());
+                        restartActivity();
+                    }else if (isAdminResponse == IsAdminResponse.INCORRECT_PASSWORD) {
+                        Toast.makeText(thisContext, "SENHA INCORRETA", Toast.LENGTH_LONG).show();
+                    } else if (isAdminResponse == IsAdminResponse.FALSE) {
+                        Toast.makeText(Session.getContext(), "NÃO É ADMIN",
+                                Toast.LENGTH_SHORT).show();
+                    }
 
-//                    if (prompt.getText().toString().equals("1234")){
-//                        Session.setAdmin(new User());
-//                        restartActivity();
-//                    } else {
-//                        Toast.makeText(Session.getContext(), "Senha incorreta", Toast.LENGTH_SHORT).show();
-//                    }
                 } catch (Exception e){
                     e.printStackTrace();
                 }
@@ -344,6 +327,18 @@ public class OpenDoorActivity extends AppCompatActivity {
         WifiManager manager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         WifiInfo info = manager.getConnectionInfo();
         return info.getMacAddress();
+    }
+
+    /**
+     * Recupera o código serial do cartão SIM do aparelho.
+     *
+     * @return - Código serial do cartão SIM.
+     */
+    private String getSimCardSerial() {
+        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(
+                Context.TELEPHONY_SERVICE);
+
+        return telephonyManager.getSimSerialNumber();
     }
 
     public void toastRequestMessage(String message) {
