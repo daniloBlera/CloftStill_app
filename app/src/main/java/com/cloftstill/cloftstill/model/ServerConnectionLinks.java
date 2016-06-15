@@ -16,7 +16,10 @@ public enum ServerConnectionLinks {
     LOCALHOST_DOMAIN,
     OPEN_DOOR_PATH,
     REQUEST_SIGNUP,
-    CHECK_IF_ADMIN;
+    CHECK_IF_ADMIN,
+    GET_ALL_USERS,
+    APPROVE_SOLICITATION,
+    GET_ALL_PENDING_SOLICITATIONS;
 
     @Override
     public String toString() {
@@ -29,6 +32,12 @@ public enum ServerConnectionLinks {
                 return "solicitacao/adiciona/";
             case CHECK_IF_ADMIN:
                 return "pessoa/valida/";
+            case GET_ALL_USERS:
+                return "pessoa/cadastrados/";
+            case APPROVE_SOLICITATION:
+                return "solicitacao/aprova/";
+            case GET_ALL_PENDING_SOLICITATIONS:
+                return "solicitacao/aguardando/";
             default:
                 return "DEFAULT_OPTION";
         }

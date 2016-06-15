@@ -26,6 +26,7 @@ import com.cloftstill.cloftstill.R;
 import com.cloftstill.cloftstill.controller.RemoteDoorController;
 import com.cloftstill.cloftstill.controller.ServerComunicate;
 import com.cloftstill.cloftstill.controller.AdminValidityController;
+import com.cloftstill.cloftstill.controller.UsersController;
 import com.cloftstill.cloftstill.model.Authenticable;
 import com.cloftstill.cloftstill.model.IsAdminResponse;
 import com.cloftstill.cloftstill.model.OpenDoorResponse;
@@ -33,10 +34,16 @@ import com.cloftstill.cloftstill.model.ServerResponse;
 import com.cloftstill.cloftstill.model.Session;
 import com.cloftstill.cloftstill.model.User;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class OpenDoorActivity extends AppCompatActivity {
     Context thisContext = this;
     String pin = "";
+    String adminSessionPassword;
     private TextView txtSignUp;
+
+    static List<User> usersList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,13 +177,24 @@ public class OpenDoorActivity extends AppCompatActivity {
                         message = "Sinal de abertura enviado!";
                     } else if (doorResponse == ServerResponse.INTERNAL_ERROR) {
                         message = "Um erro interno ocorreu no servidor, tente novamente mais tarde :(";
-                    } // TODO Implementar ACESSO_NEGADO no servidor
+                    } else if (doorResponse == ServerResponse.REQUEST_DENIED) {
+                        message = "Você não possui autorização para abrir a porta";
+                    }
 
                     Log.d("OpenDoorACTIVITY", message);
                     Toast.makeText(thisContext, message, Toast.LENGTH_LONG).show();
 
                 } catch (Exception e) {
                     Toast.makeText(thisContext, e.getMessage(), Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
+                }
+
+                Authenticable authenticable = new Authenticable(pin.toString(), getMACAddress(),
+                        getSimCardSerial());
+
+                try {
+                    List<User> list = UsersController.requestAllApprovedUsers(authenticable);
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -255,6 +273,21 @@ public class OpenDoorActivity extends AppCompatActivity {
             startActivity(intentGoReport);
         } else if (id == R.id.action_users){
             Intent intentGoUsers = new Intent(OpenDoorActivity.this, UsersActivity.class);
+
+            String pwrd = Session.getAdmin().getPinPassword();
+            Authenticable authAble = getAuthenticableCredentials();
+
+            //TODO MAKE THIS LINE WORK
+            usersList = UsersController.requestAllApprovedUsers(authAble);
+
+            if (usersList.isEmpty()) {
+                Log.d("DOOR_OPN - LIST", "IS_EMPTY");   //Só pra saber se a lista tá vazia,
+                                                        // imprimindo "NOT EMPTY" por sinal
+            } else {
+                Log.d("DOOR_OPN - LIST", "NOT_EMPTY");
+            }
+
+            UsersActivity.setUsers(usersList);
             startActivity(intentGoUsers);
         }
 
@@ -286,13 +319,20 @@ public class OpenDoorActivity extends AppCompatActivity {
                             AdminValidityController.requestAdminCheck(authenticable);
 
                     if (isAdminResponse == IsAdminResponse.TRUE) {
-                        Session.setAdmin(new User());
+
+                        User adminSession = new User();
+                        adminSession.setPinPassword(password);
+                        Session.setAdmin(adminSession);
+
                         restartActivity();
+
                     }else if (isAdminResponse == IsAdminResponse.INCORRECT_PASSWORD) {
-                        Toast.makeText(thisContext, "SENHA INCORRETA", Toast.LENGTH_LONG).show();
+                        Toast.makeText(thisContext, "Senha incorreta!", Toast.LENGTH_LONG).show();
+
                     } else if (isAdminResponse == IsAdminResponse.FALSE) {
-                        Toast.makeText(Session.getContext(), "NÃO É ADMIN",
-                                Toast.LENGTH_SHORT).show();
+
+                        Toast.makeText(Session.getContext(),
+                                "Sua conta não é do tipo Administrador", Toast.LENGTH_SHORT).show();
                     }
 
                 } catch (Exception e){
@@ -300,6 +340,7 @@ public class OpenDoorActivity extends AppCompatActivity {
                 }
             }
         });
+
         builder.setNegativeButton("CANCELAR", null);
         builder.show();
     }
@@ -341,7 +382,11 @@ public class OpenDoorActivity extends AppCompatActivity {
         return telephonyManager.getSimSerialNumber();
     }
 
-    public void toastRequestMessage(String message) {
-        Toast.makeText(thisContext, message, Toast.LENGTH_SHORT);
+    private Authenticable getAuthenticableCredentials() {
+        String macAddress = getMACAddress();
+        String simcardSerial = getSimCardSerial();
+        String password = Session.getAdmin().getPinPassword();
+
+        return new Authenticable(password, macAddress, simcardSerial);
     }
 }

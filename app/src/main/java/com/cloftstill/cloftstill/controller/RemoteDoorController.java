@@ -25,7 +25,6 @@ public class RemoteDoorController {
      * // TODO melhorar a implementação e documentação das respostas do servidor.
      */
     public static ServerResponse requestOpen(Authenticable authenticable, String gpsPosition) {
-
         ServerResponse doorResponse = null;
         HttpRequestHandler handler = new HttpRequestHandler();
 
@@ -67,6 +66,8 @@ public class RemoteDoorController {
             doorResponse = ServerResponse.UNREGISTERED_USER;
         } else if (message.equals(ServerResponse.REQUEST_SENT.toString())) {
             doorResponse = ServerResponse.REQUEST_SENT;
+        } else if (message.equals(ServerResponse.REQUEST_DENIED.toString())) {
+            doorResponse = ServerResponse.REQUEST_DENIED;
         }
 
         return doorResponse;
