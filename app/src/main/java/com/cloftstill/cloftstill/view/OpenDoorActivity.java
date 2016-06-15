@@ -274,7 +274,6 @@ public class OpenDoorActivity extends AppCompatActivity {
         } else if (id == R.id.action_users){
             Intent intentGoUsers = new Intent(OpenDoorActivity.this, UsersActivity.class);
 
-            String pwrd = Session.getAdmin().getPinPassword();
             Authenticable authAble = getAuthenticableCredentials();
 
             //TODO MAKE THIS LINE WORK
