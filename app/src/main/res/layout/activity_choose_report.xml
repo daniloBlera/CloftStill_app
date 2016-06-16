@@ -34,4 +34,12 @@
         android:id="@+id/spinnerUsers"
         android:layout_alignTop="@+id/spinnerYear"
         android:layout_toEndOf="@+id/spinnerYear" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="OK"
+        android:id="@+id/btnOKReport"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true" />
 </RelativeLayout>

@@ -61,7 +61,7 @@ public class ReportActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         finish();
-        Intent intentBackOpenDoor = new Intent(ReportActivity.this, OpenDoorActivity.class);
+        Intent intentBackOpenDoor = new Intent(ReportActivity.this, ChooseReportActivity.class);
         startActivity(intentBackOpenDoor);
     }
     public static void setRolls(String rolls) {

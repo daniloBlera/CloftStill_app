@@ -258,13 +258,13 @@ public class OpenDoorActivity extends AppCompatActivity {
             restartActivity();
         } else if (id == R.id.action_report){
             finish();
-            String rolls = "                      [ 'Ricardo',  '',    new Date(0,0,0,14,30,0), new Date(0,0,0,16,0,0) ]," +
+            /*String rolls = "                      [ 'Ricardo',  '',    new Date(0,0,0,14,30,0), new Date(0,0,0,16,0,0) ]," +
                     "                      [ 'Castro',  '', new Date(0,0,0,16,30,0), new Date(0,0,0,23,0,0) ]," +
                     "                      [ 'Stefany', '',   new Date(0,0,0,12,30,0), new Date(0,0,0,14,0,0) ]," +
                     "                      [ 'Nichene',   '',       new Date(0,0,0,6,30,0), new Date(0,0,0,15,0,0) ]," +
                     "                      [ 'Danilo',   '',          new Date(0,0,0,16,30,0), new Date(0,0,0,18,30,0) ]";
-            ReportActivity.setRolls(rolls);
-            Intent intentGoReport = new Intent(OpenDoorActivity.this, ReportActivity.class);
+            ReportActivity.setRolls(rolls);*/
+            Intent intentGoReport = new Intent(OpenDoorActivity.this, ChooseReportActivity.class);
             startActivity(intentGoReport);
         } else if (id == R.id.action_users){
             Authenticable authAble = getAuthenticableCredentials();
