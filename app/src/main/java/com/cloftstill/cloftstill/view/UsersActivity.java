@@ -37,13 +37,15 @@ public class UsersActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_users);
 
-        solicitations = new LinkedList<>();
+        //solicitations = new LinkedList<>();
 //        users = new LinkedList<>();
 
         solicitationList = (ListView) findViewById(R.id.listPendent);
         usersList = (ListView) findViewById(R.id.listUsers);
         txtSolicitations = (TextView) findViewById(R.id.txtWaiting);
         txtUsers = (TextView) findViewById(R.id.txtUsers);
+        solicitationPopulate();
+        userPopulate();
 
         try {
             if (solicitations.isEmpty()) {

@@ -293,6 +293,7 @@ public class OpenDoorActivity extends AppCompatActivity {
                 }
 
                 UsersActivity.setUsers(usersList);
+                UsersActivity.setSolicitations(usersList);
                 Intent intentGoUsers = new Intent(OpenDoorActivity.this, UsersActivity.class);
                 startActivity(intentGoUsers);
             } catch (Exception e) {
