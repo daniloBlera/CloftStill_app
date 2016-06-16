@@ -9,7 +9,9 @@ import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,15 +39,34 @@ public class UsersActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_users);
 
-        //solicitations = new LinkedList<>();
-//        users = new LinkedList<>();
-
         solicitationList = (ListView) findViewById(R.id.listPendent);
         usersList = (ListView) findViewById(R.id.listUsers);
         txtSolicitations = (TextView) findViewById(R.id.txtWaiting);
         txtUsers = (TextView) findViewById(R.id.txtUsers);
         solicitationPopulate();
         userPopulate();
+        setListViewHeightBasedOnItems(usersList);
+        setListViewHeightBasedOnItems(solicitationList);
+
+        solicitationList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                UserViewActivity.setSolicitation(true);
+                UserViewActivity.setUser(solicitations.get(position));
+                Intent intentGoUserView = new Intent(UsersActivity.this, UserViewActivity.class);
+                startActivity(intentGoUserView);
+            }
+        });
+        usersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                UserViewActivity.setSolicitation(false);
+                UserViewActivity.setUser(solicitations.get(position));
+                Intent intentGoUserView = new Intent(UsersActivity.this, UserViewActivity.class);
+                startActivity(intentGoUserView);
+            }
+        });
+
 
         try {
             if (solicitations.isEmpty()) {
@@ -145,5 +166,43 @@ public class UsersActivity extends AppCompatActivity {
                 Context.TELEPHONY_SERVICE);
 
         return telephonyManager.getSimSerialNumber();
+    }
+    /**
+     * Sets ListView height dynamically based on the height of the items.
+     *
+     * @param listView to be resized
+     * @return true if the listView is successfully resized, false otherwise
+     */
+    public boolean setListViewHeightBasedOnItems(ListView listView) {
+
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter != null) {
+
+            int numberOfItems = listAdapter.getCount();
+
+            // Get total height of all items.
+            int totalItemsHeight = 0;
+            for (int itemPos = 0; itemPos < numberOfItems; itemPos++) {
+                View item = listAdapter.getView(itemPos, null, listView);
+                item.measure(0, 0);
+                totalItemsHeight += item.getMeasuredHeight();
+            }
+
+            // Get total height of all item dividers.
+            int totalDividersHeight = listView.getDividerHeight() *
+                    (numberOfItems - 1);
+
+            // Set list height.
+            ViewGroup.LayoutParams params = listView.getLayoutParams();
+            params.height = totalItemsHeight + totalDividersHeight;
+            listView.setLayoutParams(params);
+            listView.requestLayout();
+
+            return true;
+
+        } else {
+            return false;
+        }
+
     }
 }
