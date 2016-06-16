@@ -1,5 +1,6 @@
 package com.cloftstill.cloftstill.controller;
 
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 
 import java.io.IOException;
@@ -113,6 +114,5 @@ public class HttpRequestHandler {
 
             return message;
         }
-
     }
 }

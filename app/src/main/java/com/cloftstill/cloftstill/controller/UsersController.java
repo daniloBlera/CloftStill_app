@@ -69,8 +69,24 @@ public class UsersController {
         }
     }
 
-    public static List<String> requestAllUsers(Authenticable authenticable) {
-        return null;
+    public static List<User> requestAllApprovedUsersMOCKUP(Authenticable authenticable) {
+
+        List<User> users = null;
+        try {
+            JSONObject jsonObject = new JSONObject("{\"results\": [ {\"CPF\": \"cpf1\", \"Celular\": \"cel1\", \"CodigoSIM\": \"sim1\", \"EnderecoMAC\": \"mac1\", \"Nome\": \"nome1\", \"Tipo\": \"ADMIN\" }, {\"CPF\": \"cpf2\", \"Celular\": \"cel2\", \"CodigoSIM\": \"sim2\", \"EnderecoMAC\": \"mac2\", \"Nome\": \"nome2\", \"Tipo\": \"FUNCIONARIO\"},{\"CPF\": \"cpf3\", \"Celular\": \"cel3\", \"CodigoSIM\": \"sim3\", \"EnderecoMAC\": \"mac3\", \"Nome\": \"nome3\", \"Tipo\": \"VISITANTE\"},{\"CPF\": \"05766722460\", \"Celular\": \"81988888888\", \"CodigoSIM\": \"89014103211118510720\", \"EnderecoMAC\": \"08:00:27:90:ab:6f\", \"Nome\": \"GenyTest\", \"Tipo\": \"ADMIN\"}]}");
+            JSONArray jsonArray = jsonObject.getJSONArray("results");
+            users = getUsersFromJSONArray(jsonArray);
+
+            if (users.isEmpty())
+                Log.d("USR_CTRL-MOCK", "LIST IS EMPTY");
+            else
+                Log.d("USR_CTRL-MOCK", "LIST NOT EMPTY");
+
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        return users;
     }
 
     private static List<User> getUsersFromJSONArray(JSONArray jsonArray) throws JSONException {

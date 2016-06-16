@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.cloftstill.cloftstill.R;
 import com.cloftstill.cloftstill.controller.UsersController;
 import com.cloftstill.cloftstill.model.Authenticable;
+import com.cloftstill.cloftstill.model.Session;
 import com.cloftstill.cloftstill.model.User;
 
 import java.util.LinkedList;
@@ -37,17 +38,24 @@ public class UsersActivity extends AppCompatActivity {
         setContentView(R.layout.activity_users);
 
         solicitations = new LinkedList<>();
-        users = new LinkedList<>();
+//        users = new LinkedList<>();
+
         solicitationList = (ListView) findViewById(R.id.listPendent);
         usersList = (ListView) findViewById(R.id.listUsers);
         txtSolicitations = (TextView) findViewById(R.id.txtWaiting);
         txtUsers = (TextView) findViewById(R.id.txtUsers);
 
-        if (solicitations.isEmpty()){
-            txtSolicitations.setText("");
-        }
-        if (users.isEmpty()){
-            txtUsers.setText("Nenhum usuário cadastrado");
+        try {
+            if (solicitations.isEmpty()) {
+                txtSolicitations.setText("Nenhuma solicitação em aberto no sistema");
+            }
+            if (users.isEmpty()) {
+                txtUsers.setText("Nenhum usuário cadastrado");
+            } else {
+                txtUsers.setText("TEM ALGO AÍ...");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -101,6 +109,7 @@ public class UsersActivity extends AppCompatActivity {
             name.setText(solicitations.get(position).getName());
             cpf.setText(solicitations.get(position).getCpf());
             cell.setText(solicitations.get(position).getCellNumber());
+
             return view;
         }
     }

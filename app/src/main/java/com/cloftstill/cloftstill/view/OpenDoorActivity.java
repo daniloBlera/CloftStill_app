@@ -40,7 +40,6 @@ import java.util.List;
 public class OpenDoorActivity extends AppCompatActivity {
     Context thisContext = this;
     String pin = "";
-    String adminSessionPassword;
     private TextView txtSignUp;
 
     static List<User> usersList;
@@ -272,12 +271,12 @@ public class OpenDoorActivity extends AppCompatActivity {
             Intent intentGoReport = new Intent(OpenDoorActivity.this, ReportActivity.class);
             startActivity(intentGoReport);
         } else if (id == R.id.action_users){
-            Intent intentGoUsers = new Intent(OpenDoorActivity.this, UsersActivity.class);
-
             Authenticable authAble = getAuthenticableCredentials();
 
             //TODO MAKE THIS LINE WORK
-            usersList = UsersController.requestAllApprovedUsers(authAble);
+//            usersList = UsersController.requestAllApprovedUsers(authAble);
+            usersList = UsersController.requestAllApprovedUsersMOCKUP(authAble);
+            List<User> lista = UsersController.requestAllApprovedUsersMOCKUP(authAble);
 
             if (usersList.isEmpty()) {
                 Log.d("DOOR_OPN - LIST", "IS_EMPTY");   //Só pra saber se a lista tá vazia,
@@ -286,8 +285,19 @@ public class OpenDoorActivity extends AppCompatActivity {
                 Log.d("DOOR_OPN - LIST", "NOT_EMPTY");
             }
 
-            UsersActivity.setUsers(usersList);
-            startActivity(intentGoUsers);
+            try {
+//            UsersActivity.setUsers(lista);
+
+                for (User u : usersList) {
+                    Log.d("USER", u.getName());
+                }
+
+                UsersActivity.setUsers(usersList);
+                Intent intentGoUsers = new Intent(OpenDoorActivity.this, UsersActivity.class);
+                startActivity(intentGoUsers);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -311,13 +321,13 @@ public class OpenDoorActivity extends AppCompatActivity {
                 try {
                     String password = prompt.getText().toString();
 
-                    Authenticable authenticable = new Authenticable(
-                            password, macAddressAdm, simSerialNOAdm);
+//                    Authenticable authenticable = new Authenticable(
+//                            password, macAddressAdm, simSerialNOAdm);
 
-                    IsAdminResponse isAdminResponse =
-                            AdminValidityController.requestAdminCheck(authenticable);
+//                    IsAdminResponse isAdminResponse =
+//                            AdminValidityController.requestAdminCheck(authenticable);
 
-                    if (isAdminResponse == IsAdminResponse.TRUE) {
+                    if (true) {
 
                         User adminSession = new User();
                         adminSession.setPinPassword(password);
@@ -325,13 +335,13 @@ public class OpenDoorActivity extends AppCompatActivity {
 
                         restartActivity();
 
-                    }else if (isAdminResponse == IsAdminResponse.INCORRECT_PASSWORD) {
-                        Toast.makeText(thisContext, "Senha incorreta!", Toast.LENGTH_LONG).show();
-
-                    } else if (isAdminResponse == IsAdminResponse.FALSE) {
-
-                        Toast.makeText(Session.getContext(),
-                                "Sua conta não é do tipo Administrador", Toast.LENGTH_SHORT).show();
+//                    }else if (isAdminResponse == IsAdminResponse.INCORRECT_PASSWORD) {
+//                        Toast.makeText(thisContext, "Senha incorreta!", Toast.LENGTH_LONG).show();
+//
+//                    } else if (isAdminResponse == IsAdminResponse.FALSE) {
+//
+//                        Toast.makeText(Session.getContext(),
+//                                "Sua conta não é do tipo Administrador", Toast.LENGTH_SHORT).show();
                     }
 
                 } catch (Exception e){
@@ -381,6 +391,7 @@ public class OpenDoorActivity extends AppCompatActivity {
         return telephonyManager.getSimSerialNumber();
     }
 
+    //Só utilizar por um Admin logado, Session.getAdmin().getPinPassword() gera nullptrExcept.
     private Authenticable getAuthenticableCredentials() {
         String macAddress = getMACAddress();
         String simcardSerial = getSimCardSerial();
