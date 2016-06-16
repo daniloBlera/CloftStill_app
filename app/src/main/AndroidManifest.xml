@@ -17,6 +17,8 @@
         <activity android:name=".view.ServerActivity" />
         <activity android:name=".view.SignUpActivity" />
         <activity android:name=".view.SettingsActivity" />
+        <activity android:name=".view.ReportActivity"
+            android:screenOrientation="landscape"/>
         <activity android:name=".view.UsersActivity" />
         <activity
             android:name=".view.OpenDoorActivity"
