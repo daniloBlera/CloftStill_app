@@ -17,8 +17,9 @@
         <activity android:name=".view.ServerActivity" />
         <activity android:name=".view.SignUpActivity" />
         <activity android:name=".view.SettingsActivity" />
-        <activity android:name=".view.ReportActivity"
-            android:screenOrientation="landscape"/>
+        <activity
+            android:name=".view.ReportActivity"
+            android:screenOrientation="landscape" />
         <activity android:name=".view.UsersActivity" />
         <activity
             android:name=".view.OpenDoorActivity"
@@ -38,6 +39,8 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
+        <activity android:name=".view.ChooseReportActivity"
+            android:screenOrientation="landscape"></activity>
     </application>
 
 </manifest>
