@@ -29,20 +29,15 @@ public class ChooseReportActivity extends AppCompatActivity {
     private String allUserRolls16;
     private String allUserRolls17;
 
-    private String ricardoRolls16;
-    private String ricardoRolls17;
-    private String nicheneRolls16;
-    private String nicheneRolls17;
-    private String stefanyRolls16;
-    private String stefanyRolls17;
-    private String daniloRolls16;
-    private String daniloRolls17;
-    private String castroRolls16;
-    private String castroRolls17;
+    private String ricardoRolls;
+    private String nicheneRolls;
+    private String stefanyRolls;
+    private String daniloRolls;
+    private String castroRolls;
 
     private String rollChoosen;
 
-    private String[] arrayOptions = new String[12];
+    private String[] arrayOptions = new String[7];
 
     private int dayChoosen = 0;
     private int userChoosen = 0;
@@ -83,10 +78,20 @@ public class ChooseReportActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (dayChoosen > -1 && userChoosen  > -1 && yearChoosen && monthChoosen) {
                     int choice = dayChoosen + userChoosen;
-                    rollChoosen = arrayOptions[choice];
-                    ReportActivity.setRolls(rollChoosen);
-                    Intent intentGoReport = new Intent(ChooseReportActivity.this, ReportActivity.class);
-                    startActivity(intentGoReport);
+                    if (choice < 2) {
+                        rollChoosen = arrayOptions[choice];
+                        ReportActivity.setRolls(rollChoosen);
+                        Log.d("HAHA", rollChoosen);
+                        Intent intentGoReport = new Intent(ChooseReportActivity.this, ReportActivity.class);
+                        startActivity(intentGoReport);
+                    } else {
+                        choice = userChoosen;
+                        rollChoosen = arrayOptions[choice];
+                        Log.d("HAHA", rollChoosen);
+                        ReportActivity.setRolls(rollChoosen);
+                        Intent intentGoReport = new Intent(ChooseReportActivity.this, ReportActivity.class);
+                        startActivity(intentGoReport);
+                    }
 
                 }
             }
@@ -96,6 +101,8 @@ public class ChooseReportActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position != 0) {
                     yearChoosen = true;
+                } else {
+                    yearChoosen = false;
                 }
             }
 
@@ -110,6 +117,8 @@ public class ChooseReportActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position != 0) {
                     monthChoosen = true;
+                } else {
+                    monthChoosen = false;
                 }
             }
 
@@ -134,7 +143,7 @@ public class ChooseReportActivity extends AppCompatActivity {
         spinnerUsers.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                userChoosen = (position - 1)*2;
+                userChoosen = (position - 1);
             }
 
             @Override
@@ -155,49 +164,29 @@ public class ChooseReportActivity extends AppCompatActivity {
                 "                      [ 'Nichene',   '',       new Date(0,0,0,12,30,0), new Date(0,0,0,20,0,0) ]," +
                 "                      [ 'Danilo',   '',          new Date(0,0,0,8,30,0), new Date(0,0,0,18,30,0) ]";
 
-        ricardoRolls16 = "                      [ '16/06/2016',   '',       new Date(0,0,0,12,30,0), new Date(0,0,0,20,0,0) ]," +
-                "                      [ '16/06/2016',   '',          new Date(0,0,0,8,30,0), new Date(0,0,0,18,30,0) ]";
+        ricardoRolls = "                      [ '16/06/2016',  '',    new Date(0,0,0,14,30,0), new Date(0,0,0,16,0,0) ]," +
+                "                      [ '17/06/2016',  '',    new Date(0,0,0,8,30,0), new Date(0,0,0,12,40,0) ]";
 
-        ricardoRolls17 = "                      [ '17/06/2016',   '',       new Date(0,0,0,8,30,0), new Date(0,0,0,14,0,0) ]," +
+        nicheneRolls = "                      [ '16/06/2016',   '',       new Date(0,0,0,6,30,0), new Date(0,0,0,15,0,0) ]," +
+                "                      [ '17/06/2016',   '',       new Date(0,0,0,12,30,0), new Date(0,0,0,20,0,0) ]";
+
+        daniloRolls = "                      [ '16/06/2016',   '',          new Date(0,0,0,16,30,0), new Date(0,0,0,18,30,0) ]," +
                 "                      [ '17/06/2016',   '',          new Date(0,0,0,8,30,0), new Date(0,0,0,18,30,0) ]";
 
-        nicheneRolls16 = "                      [ '16/06/2016',   '',       new Date(0,0,0,7,30,0), new Date(0,0,0,13,30,0) ]," +
-                "                      [ '16/06/2016',   '',          new Date(0,0,0,8,30,0), new Date(0,0,0,15,30,0) ]";
+        stefanyRolls = "                      [ '16/06/2016', '',   new Date(0,0,0,12,30,0), new Date(0,0,0,14,0,0) ]," +
+                "                      [ '17/06/2016', '',   new Date(0,0,0,12,30,0), new Date(0,0,0,16,0,0) ]";
 
-        nicheneRolls17 = "                      [ '17/06/2016',   '',       new Date(0,0,0,6,30,0), new Date(0,0,0,14,30,0) ]," +
-                "                      [ '17/06/2016',   '',          new Date(0,0,0,8,30,0), new Date(0,0,0,11,30,0) ]";
-
-        daniloRolls16 = "                      [ '16/06/2016',   '',       new Date(0,0,0,12,30,0), new Date(0,0,0,20,0,0) ]," +
-                "                      [ '16/06/2016',   '',          new Date(0,0,0,9,30,0), new Date(0,0,0,14,30,0) ]";
-
-        daniloRolls17 = "                      [ '17/06/2016',   '',       new Date(0,0,0,7,30,0), new Date(0,0,0,15,20,0) ]," +
-                "                      [ '17/06/2016',   '',          new Date(0,0,0,8,30,0), new Date(0,0,0,18,30,0) ]";
-
-        stefanyRolls16 = "                      [ '16/06/2016',   '',       new Date(0,0,0,7,30,0), new Date(0,0,0,13,30,0) ]," +
-                "                      [ '16/06/2016',   '',          new Date(0,0,0,8,30,0), new Date(0,0,0,15,30,0) ]";
-
-        stefanyRolls17 = "                      [ '16/06/2016',   '',       new Date(0,0,0,6,30,0), new Date(0,0,0,14,30,0) ]," +
-                "                      [ '17/06/2016',   '',          new Date(0,0,0,8,30,0), new Date(0,0,0,11,30,0) ]";
-
-        castroRolls16 = "                      [ '16/06/2016',   '',       new Date(0,0,0,7,30,0), new Date(0,0,0,13,30,0) ]," +
-                "                      [ '16/06/2016',   '',          new Date(0,0,0,8,30,0), new Date(0,0,0,15,30,0) ]";
-
-        castroRolls17 = "                      [ '16/06/2016',   '',       new Date(0,0,0,10,30,0), new Date(0,0,0,22,30,0) ]," +
-                "                      [ '17/06/2016',   '',          new Date(0,0,0,9,30,0), new Date(0,0,0,13,30,0) ]";
+        castroRolls = "                      [ '16/06/2016',  '', new Date(0,0,0,16,30,0), new Date(0,0,0,23,0,0) ]," +
+                "                      [ '17/06/2016',  '', new Date(0,0,0,7,30,0), new Date(0,0,0,18,0,0) ]";
 
 
         arrayOptions[0] = allUserRolls16;
         arrayOptions[1] = allUserRolls17;
-        arrayOptions[2] = ricardoRolls16;
-        arrayOptions[3] = ricardoRolls17;
-        arrayOptions[4] = nicheneRolls16;
-        arrayOptions[5] = nicheneRolls17;
-        arrayOptions[6] = daniloRolls16;
-        arrayOptions[7] = daniloRolls17;
-        arrayOptions[8] = stefanyRolls16;
-        arrayOptions[9] = stefanyRolls17;
-        arrayOptions[10] = castroRolls16;
-        arrayOptions[11] = castroRolls17;
+        arrayOptions[2] = ricardoRolls;
+        arrayOptions[3] = nicheneRolls;
+        arrayOptions[4] = daniloRolls;
+        arrayOptions[5] = stefanyRolls;
+        arrayOptions[6] = castroRolls;
 
     }
 
