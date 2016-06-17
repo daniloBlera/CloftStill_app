@@ -81,13 +81,11 @@ public class ChooseReportActivity extends AppCompatActivity {
                     if (choice < 2) {
                         rollChoosen = arrayOptions[choice];
                         ReportActivity.setRolls(rollChoosen);
-                        Log.d("HAHA", rollChoosen);
                         Intent intentGoReport = new Intent(ChooseReportActivity.this, ReportActivity.class);
                         startActivity(intentGoReport);
                     } else {
                         choice = userChoosen;
                         rollChoosen = arrayOptions[choice];
-                        Log.d("HAHA", rollChoosen);
                         ReportActivity.setRolls(rollChoosen);
                         Intent intentGoReport = new Intent(ChooseReportActivity.this, ReportActivity.class);
                         startActivity(intentGoReport);
