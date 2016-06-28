@@ -1,5 +1,6 @@
 package com.cloftstill.cloftstill.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
@@ -46,5 +47,12 @@ public class YourPasswordActivity extends AppCompatActivity {
         YourPasswordActivity.pin = pin;
         YourPasswordActivity.cpf = cpf;
         YourPasswordActivity.name = name;
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        Intent intentBackOpenDoor = new Intent(YourPasswordActivity.this, OpenDoorActivity.class);
+        startActivity(intentBackOpenDoor);
     }
 }
