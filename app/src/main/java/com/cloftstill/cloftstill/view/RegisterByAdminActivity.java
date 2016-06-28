@@ -1,18 +1,14 @@
 package com.cloftstill.cloftstill.view;
 
 import android.app.Activity;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.text.InputType;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -20,12 +16,8 @@ import android.widget.Toast;
 
 import com.cloftstill.cloftstill.R;
 import com.cloftstill.cloftstill.controller.CPFCheck;
-import com.cloftstill.cloftstill.controller.SignUpController;
-import com.cloftstill.cloftstill.model.Session;
-import com.cloftstill.cloftstill.model.SignupResponse;
 import com.cloftstill.cloftstill.model.User;
 
-import java.io.OutputStream;
 import java.util.Calendar;
 
 public class RegisterByAdminActivity extends AppCompatActivity {
@@ -37,8 +29,10 @@ public class RegisterByAdminActivity extends AppCompatActivity {
     private EditText edtCell;
     private TextView txtDayStart;
     private TextView txtDayEnd;
+    private String startDate;
+    private String endDate;
 
-    private int dayStart, monthStart, yearStart, dayEnd, monthEnd, yearEnd;
+    private Integer dayStart, monthStart, yearStart, dayEnd, monthEnd, yearEnd;
 
     private FloatingActionButton btnOk;
 
@@ -68,14 +62,16 @@ public class RegisterByAdminActivity extends AppCompatActivity {
         txtDayStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                setDayStartDialog(RegisterByAdminActivity.this);
+                startDate = dayStart.toString()+"/"+monthStart.toString()+"/"+yearStart.toString();
             }
         });
 
         txtDayEnd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                setDayEndDialog(RegisterByAdminActivity.this);
+                endDate = dayEnd.toString()+"/"+monthEnd.toString()+"/"+yearEnd.toString();
             }
         });
 
@@ -128,22 +124,60 @@ public class RegisterByAdminActivity extends AppCompatActivity {
     private void showErrorMessage(String msg){
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
-    private Dialog startDayPickDialog(){
-        return new DatePickerDialog(this, startPickerListener, yearStart, monthStart, dayStart);
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        Intent intentBackOpenDoor = new Intent(RegisterByAdminActivity.this, OpenDoorActivity.class);
+        startActivity(intentBackOpenDoor);
     }
 
-    private DatePickerDialog.OnDateSetListener startPickerListener = new DatePickerDialog.OnDateSetListener() {
+    private void setDayStartDialog(Activity activity) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
-        @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-            yearStart  = year;
-            monthStart = monthOfYear;
-            dayStart   = dayOfMonth;
+        builder.setTitle("Data de Inicio");
+        builder.setMessage("Escolha a data");
 
-            txtDayStart.setText(new StringBuilder()
-                    // Month is 0 based, just add 1
-                    .append(monthStart + 1).append("-").append(dayStart).append("-")
-                    .append(year).append(" "));
-        }
-    };
+        final DatePicker datePicker = new DatePicker(this);
+        builder.setView(datePicker);
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dayStart = datePicker.getDayOfMonth();
+                monthStart = datePicker.getMonth() + 1;
+                yearStart = datePicker.getYear();
+
+                Toast.makeText(RegisterByAdminActivity.this, dayStart.toString()+"/"+monthStart.toString()+"/"+yearStart.toString(), Toast.LENGTH_LONG).show();
+            }
+        });
+
+        builder.setNegativeButton("CANCELAR", null);
+        builder.show();
+    }
+
+    private void setDayEndDialog(Activity activity) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+
+        builder.setTitle("Data de Inicio");
+        builder.setMessage("Escolha a data");
+
+        final DatePicker datePicker = new DatePicker(this);
+        builder.setView(datePicker);
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dayEnd = datePicker.getDayOfMonth();
+                monthEnd = datePicker.getMonth() + 1;
+                yearEnd = datePicker.getYear();
+
+                Toast.makeText(RegisterByAdminActivity.this, dayEnd.toString()+"/"+monthEnd.toString()+"/"+yearEnd.toString(), Toast.LENGTH_LONG).show();
+            }
+        });
+
+        builder.setNegativeButton("CANCELAR", null);
+        builder.show();
+    }
+
 }
