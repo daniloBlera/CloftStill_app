@@ -8,6 +8,11 @@
         android:title="Configurações"
         app:showAsAction="never" />
     <item
+        android:id="@+id/action_pre_register"
+        android:orderInCategory="100"
+        android:title="Pré Cadastrado"
+        />
+    <item
         android:id="@+id/action_admin"
         android:orderInCategory="90"
         android:title="Adminstrador"

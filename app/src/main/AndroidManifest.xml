@@ -43,7 +43,8 @@
             android:name=".view.ChooseReportActivity"
             android:screenOrientation="landscape" />
         <activity android:name=".view.UserViewActivity" />
-        <activity android:name=".view.RegisterByAdminActivity"></activity>
+        <activity android:name=".view.RegisterByAdminActivity" />
+        <activity android:name=".view.YourPasswordActivity"></activity>
     </application>
 
 </manifest>

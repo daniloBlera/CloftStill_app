@@ -22,19 +22,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.cloftstill.cloftstill.R;
+import com.cloftstill.cloftstill.controller.CPFCheck;
 import com.cloftstill.cloftstill.controller.RemoteDoorController;
 import com.cloftstill.cloftstill.controller.ServerComunicate;
-import com.cloftstill.cloftstill.controller.AdminValidityController;
 import com.cloftstill.cloftstill.controller.UsersController;
 import com.cloftstill.cloftstill.model.Authenticable;
-import com.cloftstill.cloftstill.model.IsAdminResponse;
-import com.cloftstill.cloftstill.model.OpenDoorResponse;
 import com.cloftstill.cloftstill.model.ServerResponse;
 import com.cloftstill.cloftstill.model.Session;
 import com.cloftstill.cloftstill.model.User;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class OpenDoorActivity extends AppCompatActivity {
@@ -249,6 +247,8 @@ public class OpenDoorActivity extends AppCompatActivity {
             finish();
             Intent intentGoToSettings = new Intent(OpenDoorActivity.this, SettingsActivity.class);
             startActivity(intentGoToSettings);
+        } else if (id == R.id.action_pre_register){
+            getCPFDialog(this);
         } else if (id == R.id.action_admin){
             //ir para a tela de login do admin
             showAdminLoginDialog(this);
@@ -347,6 +347,39 @@ public class OpenDoorActivity extends AppCompatActivity {
 
                 } catch (Exception e){
                     e.printStackTrace();
+                }
+            }
+        });
+
+        builder.setNegativeButton("CANCELAR", null);
+        builder.show();
+    }
+
+    private void getCPFDialog(Activity activity) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+
+        builder.setTitle("CPF");
+        builder.setMessage("Digite seu CPF");
+
+        final EditText prompt = new EditText(this);
+        builder.setView(prompt);
+        prompt.setInputType(InputType.TYPE_CLASS_NUMBER);
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String cpf = prompt.getText().toString();
+                if (CPFCheck.isCPF(cpf)){
+                    Toast.makeText(OpenDoorActivity.this, "É um cpf", Toast.LENGTH_SHORT).show();
+                    //TODO checar no servidor se o cpf está pre cadastrado e concluir o cadastro retornando a senha
+                    //precisa de:
+                    //nome
+                    //cpf
+                    //pin
+                    //serial
+                    //mac
+                    //metodo YourPasswordActivity.setAttributes(mac, serial, pin, cpf, nome);
+                    //depois iniciar a activity YourPasswordActivity
                 }
             }
         });
