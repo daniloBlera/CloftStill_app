@@ -8,38 +8,54 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.cloftstill.cloftstill.view.SignUpActivity">
+    tools:context="com.cloftstill.cloftstill.view.RegisterByAdminActivity">
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/imgIcon"
         android:layout_centerHorizontal="true"
         android:src="@mipmap/cloftstill_icon"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Validade: "
+        android:id="@+id/txtValidade"
         android:layout_below="@+id/imgIcon"
-        android:text="SERIAL SIM: "
-        android:id="@+id/txtSerial"
-        android:layout_marginTop="15dp"/>
+        android:layout_marginTop="30dp"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/txtMAC"
-        android:layout_below="@+id/txtSerial"
-        android:text="ENDEREÇO MAC: "
-        android:layout_marginTop="15dp"/>
+        android:inputType="date"
+        android:id="@+id/txtDayStart"
+        android:text="  Data de Inicio"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_below="@+id/txtValidade"
+        android:layout_marginTop="10dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="  Data de Fim"
+        android:id="@+id/txtDayEnd"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/txtDayStart"/>
+
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/edtName"
-        android:layout_below="@+id/spinnerUserType"
+        android:maxLines="1"
+        android:layout_below="@+id/txtDayEnd"
         android:layout_centerHorizontal="true"
-        android:hint="Nome"/>
+        android:hint="Nome"
+        android:layout_marginTop="10dp"/>
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/edtCPf"
+        android:maxLines="1"
         android:layout_below="@+id/edtName"
         android:layout_centerHorizontal="true"
         android:hint="CPF"
@@ -48,15 +64,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/edtPin"
+        android:maxLines="1"
         android:layout_below="@+id/edtCPf"
         android:layout_centerHorizontal="true"
         android:hint="Senha Numérica(4 dígitos)"
-        android:inputType="number"
+        android:inputType="numberPassword"
         />
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/edtConfirmPin"
+        android:maxLines="1"
         android:layout_below="@+id/edtPin"
         android:layout_centerHorizontal="true"
         android:hint="Confirme Senha"
@@ -65,10 +83,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/edtCellPhone"
+        android:maxLines="1"
         android:layout_below="@+id/edtConfirmPin"
         android:layout_centerHorizontal="true"
         android:hint="Celular"
-        android:inputType="numberPassword"/>
+        android:inputType="number"/>
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabOk"
         android:layout_width="wrap_content"
@@ -78,12 +97,6 @@
         android:layout_alignParentBottom="true"
         android:src="@mipmap/check_yes"
         android:layout_alignParentEnd="true" />
-
-    <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/spinnerUserType"
-        android:layout_below="@+id/txtMAC"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -95,6 +108,5 @@
         android:layout_marginRight="6dp"
         android:layout_alignTop="@+id/fabOk"
         android:layout_toStartOf="@+id/fabOk" />
-
 
 </RelativeLayout>

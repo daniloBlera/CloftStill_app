@@ -18,6 +18,11 @@
         android:title="Relatórios"
         />
     <item
+        android:id="@+id/action_registerVisits"
+        android:orderInCategory="100"
+        android:title="Registrar Visita"
+        />
+    <item
         android:id="@+id/action_logout"
         android:orderInCategory="100"
         android:title="Sair do perfil"/>

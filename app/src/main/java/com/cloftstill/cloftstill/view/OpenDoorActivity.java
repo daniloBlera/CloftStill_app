@@ -295,6 +295,10 @@ public class OpenDoorActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        } else if (id == R.id.action_registerVisits){
+            finish();
+            Intent goRegisterByAdmin = new Intent(OpenDoorActivity.this, RegisterByAdminActivity.class);
+            startActivity(goRegisterByAdmin);
         }
 
         return super.onOptionsItemSelected(item);
