@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.cloftstill.cloftstill.model.Authenticable;
 import com.cloftstill.cloftstill.model.ServerConnectionLinks;
-import com.cloftstill.cloftstill.model.ServerResponse;
+import com.cloftstill.cloftstill.model.Solicitation;
 import com.cloftstill.cloftstill.model.User;
 import com.cloftstill.cloftstill.model.UserType;
 
@@ -30,7 +30,6 @@ public class UsersController {
      * @return
      */
     public static List<User> requestAllApprovedUsers(Authenticable authenticable) {
-        ServerResponse doorResponse = null;
         HttpRequestHandler handler = new HttpRequestHandler();
 
         String uri = String.format("http://%s/%s",
@@ -47,6 +46,50 @@ public class UsersController {
             String response = handler.executePOST(uri, jsonBody.toString());
 
             JSONObject jsonResponse = new JSONObject(response);
+//            String message = jsonResponse.toString();
+
+//            Log.d("USR_CTRL_RSVP", message);
+//            Log.d("USR_CTRL_jRes", jsonResponse.toString());
+
+            JSONArray jsonArray = jsonResponse.getJSONArray("results");
+//            Log.d("USR_CTRL_jArr", jsonArray.toString());
+
+            List<User> users = getUsersFromJSONArray(jsonArray);
+
+            if (users.isEmpty()) {
+//                Log.d("USR_CTRL_RSVP_EMPTY", "YES");
+            } else {
+//                Log.d("USR_CTRL_RSVP_EMPTY", "NOT");
+            }
+
+            return users;
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static List<Solicitation> requestAllPendingSolicitation(Authenticable authenticable) {
+        HttpRequestHandler handler = new HttpRequestHandler();
+
+        String uri = String.format("http://%s/%s",
+                ServerConnectionLinks.LOCALHOST_DOMAIN.toString(),
+                ServerConnectionLinks.GET_ALL_PENDING_SOLICITATIONS.toString());
+
+        JSONObject jsonBody = new JSONObject();
+
+        try {
+            jsonBody.put(Authenticable.Fields.MAC_ADDRESS.toString(),
+                    authenticable.getMacAddress());
+
+            jsonBody.put(Authenticable.Fields.SIM_SERIAL_NUMBER.toString(),
+                    authenticable.getSerialNumber());
+
+            jsonBody.put(Authenticable.Fields.PASSWORD.toString(),
+                    authenticable.getPassword());
+
+            String response = handler.executePOST(uri, jsonBody.toString());
+
+            JSONObject jsonResponse = new JSONObject(response);
             String message = jsonResponse.toString();
 
             Log.d("USR_CTRL_RSVP", message);
@@ -55,18 +98,61 @@ public class UsersController {
             JSONArray jsonArray = jsonResponse.getJSONArray("results");
             Log.d("USR_CTRL_jArr", jsonArray.toString());
 
-            List<User> users = getUsersFromJSONArray(jsonArray);
+            List<Solicitation> solicitations = getSolicitationsFromJSONArray(jsonArray);
 
-            if (users.isEmpty()) {
+            if (solicitations.isEmpty()) {
                 Log.d("USR_CTRL_RSVP_EMPTY", "YES");
             } else {
                 Log.d("USR_CTRL_RSVP_EMPTY", "NOT");
             }
 
-            return users;
+            return solicitations;
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static List<Solicitation> getSolicitationsFromJSONArray(JSONArray jsonArray)
+            throws JSONException{
+
+        List<Solicitation> solicitations = new ArrayList<>();
+
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonObj = jsonArray.getJSONObject(i);
+            Solicitation solicitation = new Solicitation();
+
+            solicitation.setName(jsonObj.getString(Solicitation.Fields.NAME.toString()));
+//            Log.d("GET-NAME",User.Fields.NAME.toString());
+
+            solicitation.setCpf(jsonObj.getString(Solicitation.Fields.CPF.toString()));
+//            Log.d("GET-CPF",User.Fields.CPF.toString());
+
+            solicitation.setMacAdress(jsonObj.getString(Solicitation.Fields.MAC_ADDRESS.toString()));
+//            Log.d("GET-MAC",User.Fields.MAC_ADDRESS.toString());
+
+            solicitation.setSerialNumber(jsonObj.getString(Solicitation.Fields.SIM_SERIAL_NUMBER.toString()));
+//            Log.d("GET-SIM",User.Fields.SIM_SERIAL_NUMBER.toString());
+
+            solicitation.setCellNumber(jsonObj.getString(Solicitation.Fields.PHONE_NUMBER.toString()));
+//            Log.d("GET-TEL",User.Fields.PHONE_NUMBER.toString());
+
+            // O servidor não inclui a senha do usuário no JSON :(
+            solicitation.setPinPassword("YOU'RE NOT SUPPOSED TO GET THIS!!!");
+
+            String typeString = jsonObj.getString(Solicitation.Fields.TYPE.toString());
+            UserType type = getUserTypeFromString(typeString);
+            solicitation.setType(type);
+
+            solicitations.add(solicitation);
+        }
+
+//        if (usersList.isEmpty()) {
+//            Log.d("FINALLY", "EMPTY");
+//        } else {
+//            Log.d("FINALLY", "NOT EMPY");
+//        }
+
+        return solicitations;
     }
 
     public static List<User> requestAllApprovedUsersMOCKUP(Authenticable authenticable) {
@@ -96,12 +182,6 @@ public class UsersController {
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObj = jsonArray.getJSONObject(i);
 
-//            if (jsonObj != null) {
-//                Log.d("ITER_jObj", jsonObj.toString());
-//            } else {
-//                Log.d("ITER_jObj", "--NULL--");
-//            }
-
             User user = new User();
 
             user.setName(jsonObj.getString(User.Fields.NAME.toString()));
@@ -128,12 +208,6 @@ public class UsersController {
             user.setType(type);
             usersList.add(user);
         }
-
-//        if (usersList.isEmpty()) {
-//            Log.d("FINALLY", "EMPTY");
-//        } else {
-//            Log.d("FINALLY", "NOT EMPY");
-//        }
 
         return usersList;
     }

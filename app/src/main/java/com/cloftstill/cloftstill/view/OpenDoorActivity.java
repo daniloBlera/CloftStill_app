@@ -24,13 +24,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cloftstill.cloftstill.R;
-import com.cloftstill.cloftstill.controller.CPFCheck;
+import com.cloftstill.cloftstill.controller.AdminValidityController;
+import com.cloftstill.cloftstill.controller.FirstAccessController;
 import com.cloftstill.cloftstill.controller.RemoteDoorController;
-import com.cloftstill.cloftstill.controller.ServerComunicate;
 import com.cloftstill.cloftstill.controller.UsersController;
 import com.cloftstill.cloftstill.model.Authenticable;
 import com.cloftstill.cloftstill.model.ServerResponse;
 import com.cloftstill.cloftstill.model.Session;
+import com.cloftstill.cloftstill.model.Solicitation;
 import com.cloftstill.cloftstill.model.User;
 
 import java.util.List;
@@ -41,6 +42,7 @@ public class OpenDoorActivity extends AppCompatActivity {
     private TextView txtSignUp;
 
     static List<User> usersList;
+    static List<Solicitation> openSolicitationsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +57,7 @@ public class OpenDoorActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intentGoToSignUp = new Intent(OpenDoorActivity.this, SignUpActivity.class);
                 startActivity(intentGoToSignUp);
+//                finish();
             }
         });
 
@@ -80,7 +83,6 @@ public class OpenDoorActivity extends AppCompatActivity {
         final Button numpad0 = (Button) findViewById(R.id.btn0);
         final Button numpadOK = (Button) findViewById(R.id.btnOK);
         final Button numpadErase = (Button) findViewById(R.id.btnErase);
-        final ServerComunicate serverComunicate = new ServerComunicate(this);
 
         numpad0.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,26 +162,27 @@ public class OpenDoorActivity extends AppCompatActivity {
                     Authenticable authenticable = new Authenticable(pin.toString(), macAddress,
                             simSerialNO);
 
-                    ServerResponse doorResponse = RemoteDoorController.requestOpen(authenticable,
-                            "LOCALIZACAO"); //TODO - Implementar Localização
+                    String doorResponse = RemoteDoorController.requestOpen(authenticable, "LOCALIZACAO");
 
-                    String message = null;
-
-                    if (doorResponse == ServerResponse.INCORRECT_PASSWORD) {
+                    if (doorResponse == null) {
                         //TODO - Colocar mensagens repetidas/comuns no xml de Strings
-                        message = "Senha incorreta!";
-                    } else if (doorResponse == ServerResponse.UNREGISTERED_USER) {
-                        message = "Este dispositivo não se encontra cadastrado no sistema!";
-                    } else if(doorResponse == ServerResponse.REQUEST_SENT) {
-                        message = "Sinal de abertura enviado!";
-                    } else if (doorResponse == ServerResponse.INTERNAL_ERROR) {
-                        message = "Um erro interno ocorreu no servidor, tente novamente mais tarde :(";
-                    } else if (doorResponse == ServerResponse.REQUEST_DENIED) {
-                        message = "Você não possui autorização para abrir a porta";
+                        doorResponse = "IT'S NULL";
+                    } else if (doorResponse.equals(ServerResponse.INCORRECT_PASSWORD.toString())) {
+                        doorResponse = "Senha incorreta!";
+                    } else if (doorResponse.equals(ServerResponse.UNREGISTERED_USER.toString())) {
+                        doorResponse = "Este dispositivo não se encontra cadastrado no sistema!";
+                    } else if(doorResponse.equals(ServerResponse.REQUEST_SENT.toString())) {
+                        doorResponse = "Sinal de abertura enviado!";
+                    } else if (doorResponse.equals(ServerResponse.INTERNAL_ERROR.toString())) {
+                        doorResponse = "Um erro interno ocorreu no servidor, tente novamente mais tarde :(";
+                    } else if (doorResponse.equals(ServerResponse.REQUEST_DENIED.toString())) {
+                        doorResponse = "Você não possui autorização para abrir a porta";
+                    } else {
+                        doorResponse = "Falhou em todos os casos???";
                     }
 
-                    Log.d("OpenDoorACTIVITY", message);
-                    Toast.makeText(thisContext, message, Toast.LENGTH_LONG).show();
+                    Log.d("OpenDoorACTIVITY", doorResponse);
+                    Toast.makeText(thisContext, doorResponse, Toast.LENGTH_LONG).show();
 
                 } catch (Exception e) {
                     Toast.makeText(thisContext, e.getMessage(), Toast.LENGTH_LONG).show();
@@ -189,12 +192,6 @@ public class OpenDoorActivity extends AppCompatActivity {
                 Authenticable authenticable = new Authenticable(pin.toString(), getMACAddress(),
                         getSimCardSerial());
 
-                try {
-                    List<User> list = UsersController.requestAllApprovedUsers(authenticable);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
                 pin = ""; //reset password
             }
         });
@@ -203,9 +200,6 @@ public class OpenDoorActivity extends AppCompatActivity {
         openDoorBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //t = L.getTexto();
-                //DoorController controller = new DoorController();
-                //controller.requestSignUp();
                 numpad0.setEnabled(true);
                 numpad1.setEnabled(true);
                 numpad2.setEnabled(true);
@@ -222,6 +216,11 @@ public class OpenDoorActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 
     @Override
@@ -270,26 +269,27 @@ public class OpenDoorActivity extends AppCompatActivity {
             Authenticable authAble = getAuthenticableCredentials();
 
             //TODO MAKE THIS LINE WORK
-//            usersList = UsersController.requestAllApprovedUsers(authAble);
-            usersList = UsersController.requestAllApprovedUsersMOCKUP(authAble);
-            List<User> lista = UsersController.requestAllApprovedUsersMOCKUP(authAble);
+            usersList = UsersController.requestAllApprovedUsers(authAble);
+//            usersList = UsersController.requestAllApprovedUsersMOCKUP(authAble);
+            openSolicitationsList = UsersController.requestAllPendingSolicitation(authAble);
 
             if (usersList.isEmpty()) {
-                Log.d("DOOR_OPN - LIST", "IS_EMPTY");   //Só pra saber se a lista tá vazia,
-                                                        // imprimindo "NOT EMPTY" por sinal
+                Log.d("DOOR_OPN_USR - LIST", "IS_EMPTY");   //Só pra saber se a lista tá vazia,
             } else {
-                Log.d("DOOR_OPN - LIST", "NOT_EMPTY");
+                Log.d("DOOR_OPN_USR - LIST", "NOT_EMPTY");
+            }
+
+            if (openSolicitationsList.isEmpty()) {
+                Log.d("DOOR_OPN_SOL - LIST", "IS_EMPTY");   //Só pra saber se a lista tá vazia,
+            } else {
+                Log.d("DOOR_OPN_SOL - LIST", "NOT_EMPTY");
             }
 
             try {
-//            UsersActivity.setUsers(lista);
-
-                for (User u : usersList) {
-                    Log.d("USER", u.getName());
-                }
-
                 UsersActivity.setUsers(usersList);
+                //TODO Mudar setSolicitations() para aceitar List<Solicitation>
                 UsersActivity.setSolicitations(usersList);
+//                UsersActivity.setSolicitations(openSolicitationsList);
                 Intent intentGoUsers = new Intent(OpenDoorActivity.this, UsersActivity.class);
                 startActivity(intentGoUsers);
             } catch (Exception e) {
@@ -307,9 +307,6 @@ public class OpenDoorActivity extends AppCompatActivity {
     private void showAdminLoginDialog(Activity activity) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
-        final String macAddressAdm = getMACAddress();
-        final String simSerialNOAdm = getSimCardSerial();
-
         builder.setTitle("Login");
         builder.setMessage("Digite a Senha de administrador");
 
@@ -322,27 +319,36 @@ public class OpenDoorActivity extends AppCompatActivity {
                 try {
                     String password = prompt.getText().toString();
 
-//                    Authenticable authenticable = new Authenticable(
-//                            password, macAddressAdm, simSerialNOAdm);
+                    Authenticable authenticable = getNewAuthenticable(password);
 
-//                    IsAdminResponse isAdminResponse =
-//                            AdminValidityController.requestAdminCheck(authenticable);
+                    String isAdminResponse =
+                            AdminValidityController.requestAdminCheck(authenticable);
 
-                    if (true) {
-
+                    if (isAdminResponse.equals(ServerResponse.ADMIN_VERIFICATION_TRUE.toString())) {
+                        Log.d("DOOR_ACTY_ADM_LOG", "TRUE");
                         User adminSession = new User();
                         adminSession.setPinPassword(password);
                         Session.setAdmin(adminSession);
 
                         restartActivity();
+                    } else if (isAdminResponse.equals(
+                            ServerResponse.ADMIN_VERIFICATION_FALSE.toString())) {
 
-//                    }else if (isAdminResponse == IsAdminResponse.INCORRECT_PASSWORD) {
-//                        Toast.makeText(thisContext, "Senha incorreta!", Toast.LENGTH_LONG).show();
-//
-//                    } else if (isAdminResponse == IsAdminResponse.FALSE) {
-//
-//                        Toast.makeText(Session.getContext(),
-//                                "Sua conta não é do tipo Administrador", Toast.LENGTH_SHORT).show();
+                        Log.d("DOOR_ACTY_ADM_LOG", "FALSE");
+                        Toast.makeText(Session.getContext(),
+                                "Sua conta não é do tipo Administrador", Toast.LENGTH_SHORT).show();
+                    } else if (isAdminResponse.equals(
+                            ServerResponse.INCORRECT_PASSWORD.toString())) {
+
+                        Log.d("DOOR_ACTY_ADM_LOG", "PWORD");
+                        Toast.makeText(thisContext, "Senha incorreta!", Toast.LENGTH_LONG).show();
+                    } else if (isAdminResponse.equals(
+                            ServerResponse.UNREGISTERED_USER.toString())) {
+
+                        Log.d("DOOR_ACTY_ADM_LOG", "UNREG_USR");
+                        Toast.makeText(thisContext,
+                                "Este dispositivo não se encontra cadastrado no sistema",
+                                Toast.LENGTH_LONG).show();
                     }
 
                 } catch (Exception e){
@@ -363,23 +369,88 @@ public class OpenDoorActivity extends AppCompatActivity {
 
         final EditText prompt = new EditText(this);
         builder.setView(prompt);
-        prompt.setInputType(InputType.TYPE_CLASS_NUMBER);
+//        prompt.setInputType(InputType.TYPE_CLASS_NUMBER);//TODO CPF com Strings
+        prompt.setInputType(InputType.TYPE_CLASS_TEXT);
 
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String cpf = prompt.getText().toString();
-                if (CPFCheck.isCPF(cpf)){
-                    Toast.makeText(OpenDoorActivity.this, "É um cpf", Toast.LENGTH_SHORT).show();
-                    //TODO checar no servidor se o cpf está pre cadastrado e concluir o cadastro retornando a senha
-                    //precisa de:
-                    //nome
-                    //cpf
-                    //pin
-                    //serial
-                    //mac
-                    //metodo YourPasswordActivity.setAttributes(mac, serial, pin, cpf, nome);
-                    //depois iniciar a activity YourPasswordActivity
+
+                //TODO re-inserir casos quando cpf digitado válido ou inválido
+                //TODO Substituir if-else-if por switch(case)
+//                if (CPFCheck.isCPF(cpf)) {
+                if (true) {
+                    String macAddress = getMACAddress();
+                    String simcardSerial = getSimCardSerial();
+
+                    String validationResponse = FirstAccessController.validade(
+                            cpf, macAddress, simcardSerial);
+
+                    User thisUser = null;
+
+                    if (validationResponse == null) {
+                        validationResponse = "ITS NULL";
+
+                        Log.d("DOOR_ACTY_FST", validationResponse);
+                        Toast.makeText(thisContext, validationResponse, Toast.LENGTH_LONG).show();
+
+                    } else if (validationResponse.equals(
+                            ServerResponse.SOLICITATION_ACCEPTED.toString())) {
+
+                        thisUser = FirstAccessController.getMyAccountDetails(cpf);
+                        Log.d("DOOR_ACTY_ACC_DETAIL", thisUser.getMacAdress());
+
+                        YourPasswordActivity.setAttributes(thisUser);
+
+                        Intent goYourPasswordActivity = new Intent(
+                                OpenDoorActivity.this, YourPasswordActivity.class);
+
+                        startActivity(goYourPasswordActivity);
+                        finish();
+
+                    } else {
+                        //Sobrescreve validationResponse com uma versão "human-readable" para cada
+                        // possível resposta do servidor e dá um Toast ao final.
+                        if (validationResponse.equals(
+                                ServerResponse.UNREGISTERED_USER.toString())) {
+
+                            validationResponse = "Usuario não registrado!";
+                        } else if (validationResponse.equals(
+                                ServerResponse.CPF_NOT_FIRST_ACCESS.toString())) {
+
+                            validationResponse = "Este usuário não está marcado para primeiro acesso!";
+                        } else if (validationResponse.equals(
+                                ServerResponse.INTERNAL_ERROR.toString())) {
+
+                            validationResponse = "Um erro interno ocorreu no servidor, tente" +
+                                    "novamente mais tarde :(";
+
+                        } else if (validationResponse.equals(
+                                ServerResponse.MAC_SIM_ALREADY_REGISTERED.toString())) {
+
+                            validationResponse = "Seu dispositivo já se encontra cadastrado!";
+                        } else if (validationResponse.equals(
+                                ServerResponse.CPF_NOT_FIRST_ACCESS.toString())) {
+
+                            validationResponse = "Esta conta não se encontra no estatus de" +
+                                    "'primeiro acesso'!";
+
+                            Toast.makeText(thisContext, validationResponse,
+                                    Toast.LENGTH_LONG).show();
+
+                        } else {
+                            validationResponse = "Falhou em todos os casos???";
+                            Toast.makeText(thisContext, validationResponse,
+                                    Toast.LENGTH_LONG).show();
+                        }
+
+                        Log.d("DOOR_ACTY_FST", validationResponse);
+                        Toast.makeText(thisContext, validationResponse,
+                                Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Toast.makeText(thisContext, "CPF inválido!", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -430,6 +501,21 @@ public class OpenDoorActivity extends AppCompatActivity {
         String macAddress = getMACAddress();
         String simcardSerial = getSimCardSerial();
         String password = Session.getAdmin().getPinPassword();
+
+        return new Authenticable(password, macAddress, simcardSerial);
+    }
+
+    /**
+     * Cria uma instância de Authenticable com a senha fornecida.
+     *
+     * @param password -- Senha fornecida pelo usuário para verificação de validade do status de
+     *                    administrador.
+     * @return -- Instância de Authenticable com o endereço mac e código do cartão SIM do
+     *            dispositivo assim como a senha fornecida pelo usuário.
+     */
+    private Authenticable getNewAuthenticable(String password) {
+        String macAddress = getMACAddress();
+        String simcardSerial = getSimCardSerial();
 
         return new Authenticable(password, macAddress, simcardSerial);
     }

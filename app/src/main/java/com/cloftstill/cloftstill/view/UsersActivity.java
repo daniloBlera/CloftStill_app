@@ -14,20 +14,17 @@ import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cloftstill.cloftstill.R;
-import com.cloftstill.cloftstill.controller.UsersController;
-import com.cloftstill.cloftstill.model.Authenticable;
-import com.cloftstill.cloftstill.model.Session;
+import com.cloftstill.cloftstill.model.Solicitation;
 import com.cloftstill.cloftstill.model.User;
 
-import java.util.LinkedList;
 import java.util.List;
 
 public class UsersActivity extends AppCompatActivity {
-
+    //TODO Popular lista de solicitações com entidade Solicitation
     private static List<User> solicitations;
+//    private static List<Solicitation> solicitations;
     private static List<User> users;
     private ListView solicitationList;
     private ListView usersList;
@@ -74,9 +71,8 @@ public class UsersActivity extends AppCompatActivity {
             }
             if (users.isEmpty()) {
                 txtUsers.setText("Nenhum usuário cadastrado");
-            } else {
-                txtUsers.setText("TEM ALGO AÍ...");
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

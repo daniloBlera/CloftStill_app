@@ -15,6 +15,26 @@ public class Authenticable {
         this.serialNumber = simCardSerialNumber;
     }
 
+    public enum Fields {
+        PASSWORD,
+        MAC_ADDRESS,
+        SIM_SERIAL_NUMBER;
+
+        @Override
+        public String toString() {
+            switch (this) {
+                case PASSWORD:
+                    return "Senha";
+                case MAC_ADDRESS:
+                    return "EnderecoMAC";
+                case SIM_SERIAL_NUMBER:
+                    return "CodigoSIM";
+                default:
+                    return "UNDEFINED";
+            }
+        }
+    }
+
     public String getPassword(){
         return this.password;
     }

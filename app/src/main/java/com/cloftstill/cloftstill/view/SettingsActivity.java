@@ -36,7 +36,8 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        name = "Ricardo Lucas R. M. da Silva";
+        if (name == null) //TODO Recuperar credenciais de Session
+            name = "Ricardo Lucas R. M. da Silva";
         materialDesignFAM = (FloatingActionMenu) findViewById(R.id.floatingOptions);
         alterarNome = (FloatingActionButton) findViewById(R.id.material_design_floating_action_menu_item1);
         alterarSenha = (FloatingActionButton) findViewById(R.id.material_design_floating_action_menu_item2);
@@ -134,7 +135,7 @@ public class SettingsActivity extends AppCompatActivity {
         builder.setNegativeButton("CANCELAR", null);
         builder.show();
     }
-    private static void setAtributtes(String name, String password){
+    public static void setAtributtes(String name, String password){
         SettingsActivity.name = name;
         SettingsActivity.password = password;
     }

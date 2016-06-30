@@ -44,7 +44,7 @@
             android:screenOrientation="landscape" />
         <activity android:name=".view.UserViewActivity" />
         <activity android:name=".view.RegisterByAdminActivity" />
-        <activity android:name=".view.YourPasswordActivity"></activity>
+        <activity android:name=".view.YourPasswordActivity" />
     </application>
 
 </manifest>

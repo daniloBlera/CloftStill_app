@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import com.cloftstill.cloftstill.R;
+import com.cloftstill.cloftstill.model.User;
 
 
 public class YourPasswordActivity extends AppCompatActivity {
@@ -41,12 +42,21 @@ public class YourPasswordActivity extends AppCompatActivity {
 
     }
 
-    public static void setAttributes(String mac, String serial, String pin, String cpf, String name){
-        YourPasswordActivity.mac = mac;
-        YourPasswordActivity.serial = serial;
-        YourPasswordActivity.pin = pin;
-        YourPasswordActivity.cpf = cpf;
-        YourPasswordActivity.name = name;
+    //TODO A ser removido
+//    public static void setAttributes(String mac, String serial, String pin, String cpf, String name){
+//        YourPasswordActivity.mac = mac;
+//        YourPasswordActivity.serial = serial;
+//        YourPasswordActivity.pin = pin;
+//        YourPasswordActivity.cpf = cpf;
+//        YourPasswordActivity.name = name;
+//    }
+
+    public static void setAttributes(User user) {
+        YourPasswordActivity.mac = user.getMacAdress();
+        YourPasswordActivity.serial = user.getSerialNumber();
+        YourPasswordActivity.pin = user.getPinPassword();
+        YourPasswordActivity.cpf = user.getCpf();
+        YourPasswordActivity.name = user.getName();
     }
 
     @Override

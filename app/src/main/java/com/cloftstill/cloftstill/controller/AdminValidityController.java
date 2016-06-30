@@ -1,9 +1,8 @@
 package com.cloftstill.cloftstill.controller;
 
+
 import com.cloftstill.cloftstill.model.Authenticable;
-import com.cloftstill.cloftstill.model.IsAdminResponse;
 import com.cloftstill.cloftstill.model.ServerConnectionLinks;
-import com.cloftstill.cloftstill.model.User;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,29 +13,7 @@ import org.json.JSONObject;
 public class AdminValidityController {
     private AdminValidityController(){}
 
-    public static String requestValidityCheck(Authenticable authenticable) throws JSONException {
-        String response = null;
-
-        HttpRequestHandler handler = new HttpRequestHandler();
-
-        String uri = String.format("http://%s/%s",
-                ServerConnectionLinks.LOCALHOST_DOMAIN.toString(),
-                ServerConnectionLinks.CHECK_IF_ADMIN.toString());
-
-        JSONObject jsonBody = new JSONObject();
-
-        jsonBody.put(User.Fields.PASSWORD.toString(), authenticable.getPassword());
-        jsonBody.put(User.Fields.MAC_ADDRESS.toString(), authenticable.getMacAddress());
-        jsonBody.put(User.Fields.SIM_SERIAL_NUMBER.toString(), authenticable.getSerialNumber());
-
-        response = handler.executePOST(uri, jsonBody.toString());
-        JSONObject jsonResponse = new JSONObject(response);
-
-        return jsonResponse.toString();
-    }
-
-    public static IsAdminResponse requestAdminCheck(Authenticable authenticable) {
-        IsAdminResponse isAdminResponse = null;
+    public static String requestAdminCheck(Authenticable authenticable) {
         HttpRequestHandler handler = new HttpRequestHandler();
 
         String uri = String.format("http://%s/%s",
@@ -46,26 +23,21 @@ public class AdminValidityController {
         try {
             JSONObject jsonBody = new JSONObject();
 
-            jsonBody.put(User.Fields.PASSWORD.toString(), authenticable.getPassword());
-            jsonBody.put(User.Fields.MAC_ADDRESS.toString(), authenticable.getMacAddress());
-            jsonBody.put(User.Fields.SIM_SERIAL_NUMBER.toString(), authenticable.getSerialNumber());
+            jsonBody.put(Authenticable.Fields.PASSWORD.toString(),
+                    authenticable.getPassword());
+
+            jsonBody.put(Authenticable.Fields.MAC_ADDRESS.toString(),
+                    authenticable.getMacAddress());
+
+            jsonBody.put(Authenticable.Fields.SIM_SERIAL_NUMBER.toString(),
+                    authenticable.getSerialNumber());
 
             String response = handler.executePOST(uri, jsonBody.toString());
-            JSONObject jsonResponse = new JSONObject(response);
+            String serverResponse = new JSONObject(response).getString("message");
 
-            String body = jsonResponse.getString("message");
-
-            if (body.equals(IsAdminResponse.INCORRECT_PASSWORD.toString()))
-                isAdminResponse = IsAdminResponse.INCORRECT_PASSWORD;
-            else if (body.equals(IsAdminResponse.FALSE.toString()))
-                isAdminResponse = IsAdminResponse.FALSE;
-            else
-                isAdminResponse = IsAdminResponse.TRUE;
-
+            return serverResponse;
         } catch (JSONException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-
-        return isAdminResponse;
     }
 }

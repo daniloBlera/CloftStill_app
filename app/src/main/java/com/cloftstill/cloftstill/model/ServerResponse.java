@@ -54,7 +54,19 @@ public enum ServerResponse {
      * 1 - O usuário abriu o app e já foi clicando em Abrir porta sem ter solicitado o cadastro;
      * 2 - O usuário clicou em Abrir Porta mas a sua solicitação ainda não foi autorizada;
      */
-    UNREGISTERED_USER;
+    UNREGISTERED_USER,
+
+    SOLICITATION_APPROVED,
+
+    PHONE_NUMBER_ALREADY_REGISTERED,
+
+    CPF_ALREADY_REGISTERED,
+
+    CPF_NOT_FIRST_ACCESS,
+
+    UNREGISTERED_REQUEST,
+
+    MAC_SIM_ALREADY_REGISTERED;
 
     @Override
     public String toString() {
@@ -81,6 +93,18 @@ public enum ServerResponse {
                 return "INCORRECT_PASSWORD";
             case UNREGISTERED_USER:
                 return "UNREGISTERED_USER";
+            case SOLICITATION_APPROVED:
+                return "SOLICITATION_APPROVED";
+            case PHONE_NUMBER_ALREADY_REGISTERED:
+                return "PHONE_NUMBER_ALREADY_REGISTERED";
+            case CPF_ALREADY_REGISTERED:
+                return "CPF_ALREADY_REGISTERED";
+            case CPF_NOT_FIRST_ACCESS:
+                return "NOT_FIRST_ACCESS";
+            case UNREGISTERED_REQUEST:
+                return "UNREGISTERED_REQUEST";
+            case MAC_SIM_ALREADY_REGISTERED:
+                return "MAC_SIM_SERIAL_ALREADY_REGISTERED";
             default:
                 return "UNDEFINED";
         }

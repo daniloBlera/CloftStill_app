@@ -73,5 +73,23 @@
         android:layout_toStartOf="@+id/floatingOk"
         android:layout_marginBottom="16dp"
         android:layout_marginRight="6dp"/>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingDesaprove"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:src="@android:drawable/ic_menu_close_clear_cancel"
+        app:backgroundTint="@color/colorPrimary"
+        android:layout_above="@+id/floatingOk"
+        android:layout_alignStart="@+id/floatingOk" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Reprovar Solicitação"
+        android:id="@+id/textView2"
+        android:layout_marginBottom="16dp"
+        android:layout_above="@+id/floatingOk"
+        android:layout_alignEnd="@+id/textView" />
 
 </RelativeLayout>

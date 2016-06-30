@@ -1,13 +1,18 @@
 package com.cloftstill.cloftstill.model;
 
-public class User {
+import java.sql.Timestamp;
+
+/**
+ * JAVABean representante da entidade 'Solicitacao' no banco.
+ */
+public class Solicitation {
     private String name;
     private String serialNumber;
     private String cellNumber;
     private String pinPassword;
-
     private UserType type;
-    private String adminPassword;
+    private String status;
+    private Timestamp creationTime;
     private String cpf;
     private String macAdress;
 
@@ -18,27 +23,33 @@ public class User {
         SIM_SERIAL_NUMBER,
         TYPE,
         PHONE_NUMBER,
+        STATUS,
+        CREATION_TIME,
         CPF;
 
         @Override
         public String toString() {
             switch (this) {
-            case NAME:
-                return "Nome";
-            case PASSWORD:
-                return "Senha";
-            case MAC_ADDRESS:
-                return "EnderecoMAC";
-            case SIM_SERIAL_NUMBER:
-                return "CodigoSIM";
-            case TYPE:
-                return "Tipo";
-            case PHONE_NUMBER:
-                return "Celular";
-            case CPF:
-                return "CPF";
-            default:
-                return "UNDEFINED";
+                case NAME:
+                    return "Nome";
+                case PASSWORD:
+                    return "Senha";
+                case MAC_ADDRESS:
+                    return "EnderecoMAC";
+                case SIM_SERIAL_NUMBER:
+                    return "CodigoSIM";
+                case TYPE:
+                    return "Tipo";
+                case PHONE_NUMBER:
+                    return "Celular";
+                case STATUS:
+                    return "Status";
+                case CREATION_TIME:
+                    return "DataCriacao";
+                case CPF:
+                    return "CPF";
+                default:
+                    return "UNDEFINED";
             }
         }
     }
@@ -68,12 +79,12 @@ public class User {
         this.serialNumber = simNumber;
     }
 
-    public String getAdminPassword() {
-        return adminPassword;
+    public String getStatus() {
+        return status;
     }
 
-    public void setAdminPassword(String adminPassword) {
-        this.adminPassword = adminPassword;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public UserType getType() {
@@ -108,4 +119,11 @@ public class User {
         return cellNumber;
     }
 
+    public Timestamp getCreationTime() {
+        return creationTime;
+    }
+
+    public void setCreationTime(Timestamp timestamp) {
+        this.creationTime = timestamp;
+    }
 }
