@@ -15,8 +15,8 @@ import android.widget.Toast;
 
 import com.cloftstill.cloftstill.R;
 import com.cloftstill.cloftstill.controller.SignUpController;
+import com.cloftstill.cloftstill.model.ServerResponse;
 import com.cloftstill.cloftstill.model.Session;
-import com.cloftstill.cloftstill.model.SignupResponse;
 import com.cloftstill.cloftstill.model.User;
 import com.cloftstill.cloftstill.controller.CPFCheck;
 import com.cloftstill.cloftstill.model.UserType;
@@ -81,8 +81,33 @@ public class SignUpActivity extends AppCompatActivity {
 
                     try {
                         Log.d("SIGNUP_ACTIVITY", "DENTRO");
-                        SignupResponse response = SignUpController.requestSignUp(user);
-                        Toast.makeText(thisContext, response.toString(), Toast.LENGTH_LONG).show();
+                        String response = SignUpController.requestSignUp(user);
+
+                        if (response == null) {
+                            Toast.makeText(
+                                    thisContext, "Retornou NULL...", Toast.LENGTH_LONG).show();
+
+                        } else if (response.equals(
+                                ServerResponse.SOLICITATION_ACCEPTED.toString())) {
+
+                            Toast.makeText(thisContext, "Solicitação de cadastro aceita",
+                                    Toast.LENGTH_LONG).show();
+
+                        } else if (response.equals(
+                                ServerResponse.ALREADY_ACCEPTED.toString())) {
+
+                            Toast.makeText(thisContext,
+                                    "Este dispositivo já possui uma solicitação para cadastro!",
+                                    Toast.LENGTH_LONG).show();
+
+                        } else if (response.equals(
+                                ServerResponse.INTERNAL_ERROR.toString())) {
+
+                            Toast.makeText(thisContext,
+                                    "Um erro interno ao servidor ocorreu, tente mais tarde",
+                                    Toast.LENGTH_LONG).show();
+                        }
+
                         // TODO Finalizar activity e voltar para a tela de abrir porta
                     } catch (Exception e) {
                         Log.d("SIGNUP_ACTIVITY", "FORA_TEMER");

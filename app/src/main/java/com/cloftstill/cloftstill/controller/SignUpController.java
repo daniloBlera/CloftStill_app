@@ -18,9 +18,7 @@ public class SignUpController {
      * @return Resposta do servidor para a tentativa de cadastro de solicitação.
      * // TODO melhorar a implementação e documentação das respostas do servidor.
      */
-    public static SignupResponse requestSignUp(User user) {
-        SignupResponse signupResponse = null;
-
+    public static String requestSignUp(User user) {
         HttpRequestHandler handler = new HttpRequestHandler();
 
         String uri = String.format("http://%s/%s",
@@ -39,30 +37,11 @@ public class SignUpController {
             jsonBody.put(User.Fields.CPF.toString(), user.getCpf());
 
             String response = handler.executePOST(uri, jsonBody.toString());
-            JSONObject jsonResponse = new JSONObject(response);
-            signupResponse = getEnumFromString(jsonResponse.getString("message"));
+            String message = new JSONObject(response).getString("message");
 
-            return signupResponse;
+            return message;
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private static SignupResponse getEnumFromString(String message) {
-        SignupResponse doorResponse = null;
-
-        if (message.equals(SignupResponse.ALREADY_ACCEPTED.toString())) {
-            doorResponse = SignupResponse.ALREADY_ACCEPTED;
-        } else if (message.equals(SignupResponse.SOLICITATION_ACCEPTED.toString())) {
-            doorResponse = SignupResponse.SOLICITATION_ACCEPTED;
-        }else if (message.equals(SignupResponse.JSON_MISSING_ARGS.toString())) {
-            doorResponse = SignupResponse.JSON_MISSING_ARGS;
-        } else if (message.equals(SignupResponse.JSON_MISSING_KEYS.toString())) {
-            doorResponse = SignupResponse.JSON_MISSING_KEYS;
-        } else if (message.equals(SignupResponse.INTERNAL_ERROR.toString())) {
-            doorResponse = SignupResponse.INTERNAL_ERROR;
-        }
-
-        return doorResponse;
     }
 }

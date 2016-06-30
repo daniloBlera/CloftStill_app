@@ -57,7 +57,6 @@ public class OpenDoorActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intentGoToSignUp = new Intent(OpenDoorActivity.this, SignUpActivity.class);
                 startActivity(intentGoToSignUp);
-//                finish();
             }
         });
 

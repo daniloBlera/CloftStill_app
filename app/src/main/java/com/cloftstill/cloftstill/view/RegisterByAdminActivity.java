@@ -74,13 +74,6 @@ public class RegisterByAdminActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 setDayStartDialog(RegisterByAdminActivity.this);
-//                startDate = dayStart.toString()+"/"+monthStart.toString()+"/"+yearStart.toString();
-//                String dateFormat = "%4d-%02d-%02d 00:00:00";
-//
-//                startDateFormat = String.format(dateFormat, yearStart.intValue(),
-//                        monthStart.intValue(), dayStart.intValue());
-//
-//                txtDayStart.setText(startDate);
             }
         });
 
@@ -88,13 +81,6 @@ public class RegisterByAdminActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 setDayEndDialog(RegisterByAdminActivity.this);
-//                endDate = dayEnd.toString()+"/"+monthEnd.toString()+"/"+yearEnd.toString();
-//                String dateFormat = "%4d-%02d-%02d 23:59:59";
-//
-//                endDateFormat = String.format(dateFormat, yearEnd.intValue(),
-//                        monthEnd.intValue(), dayEnd.intValue());
-//
-//                txtDayEnd.setText(endDate);
             }
         });
 
@@ -114,11 +100,11 @@ public class RegisterByAdminActivity extends AppCompatActivity {
 
                     try {
                         Log.d("ADM_REGISTER", "DENTRO");
-                        String result = AdminVisitingUserController.registerALTERNATIVE(user, period);
+                        String result = AdminVisitingUserController.register(user, period);
 
-                        if (result != null) {
+                        if (result == null) {
                             Log.d("ADM_REG_RES", "NOT NULL");
-                            Toast.makeText(thisContext, result, Toast.LENGTH_LONG).show();
+                            Toast.makeText(thisContext, "Deu NULL...", Toast.LENGTH_LONG).show();
 
                         } else if (result.equals(ServerResponse.SOLICITATION_APPROVED.toString())) {
                             Log.d("ADM_REG_RES", "APPROVED");
